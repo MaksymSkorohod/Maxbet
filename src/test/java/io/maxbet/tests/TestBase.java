@@ -1,6 +1,7 @@
 package io.maxbet.tests;
 import io.maxbet.pageObjects.LobbyPage;
 import io.maxbet.pageObjects.LoginPage;
+import org.testng.Assert;
 import org.testng.annotations.*;
 
 import static io.maxbet.DriverManager.getDriver;
@@ -11,17 +12,18 @@ public class TestBase {
 
     @BeforeMethod
     public void logIn(){
-        lobbyPage = new LobbyPage()
+        getDriver().get("https://dev.maxbet.ro/en");
+     new LoginPage()
+                .clickAcceptButtonJs()
                 .clickOnLoginButton()
                 .enterUsername("James_Bond")
                 .enterPassword("Vfrcbv82")
-                .clickLoginButton();
+                .clickOnLogin()
+                .clickOnPage()
+                .clickOnAcceptNotification();
     }
 
-    @BeforeMethod
-    public void openLobbyPage(){getDriver().get("https://dev.maxbet.ro/");
-    }
-    @AfterMethod
-    public void close(){killDriver();}
+//    @AfterMethod
+//    public void close(){killDriver();}
 
 }

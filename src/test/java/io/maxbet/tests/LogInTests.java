@@ -2,19 +2,34 @@ package io.maxbet.tests;
 
 import io.maxbet.pageObjects.LobbyPage;
 import io.maxbet.pageObjects.LoginPage;
+import org.openqa.selenium.WebDriver;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class LogInTests extends TestBase{
+import static io.maxbet.DriverManager.getDriver;
+
+public class LogInTests extends TestBase {
+
     @Override
-    public void logIn(){lobbyPage =  new LobbyPage();}
-    @Test(description = "Successfull Login")
-    public void loginSuccess(){
-        new LobbyPage()
+    public void logIn() {
+        lobbyPage = new LobbyPage();
+    }
+    @Test(description = "Successful Login")
+    public void loginSuccess() {
+        getDriver().get("https://dev.maxbet.ro/en");
+        new LoginPage()
+                .clickAcceptButtonJs()
                 .clickOnLoginButton()
-                .getLoginRegisterModal().isExists();
-        new LobbyPage()
                 .enterUsername("James_Bond")
                 .enterPassword("Vfrcbv82")
-                .clickLoginButton();
+                .clickOnLogin()
+                .clickOnPage()
+                .clickOnAcceptNotification();
+        Assert.assertTrue(
+                new LoginPage().getUserInfo().isExists(15),//15
+                "User info is not visible after successful login"
+        );
     }
 }
+
+

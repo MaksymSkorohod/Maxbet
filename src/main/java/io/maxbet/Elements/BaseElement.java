@@ -2,16 +2,17 @@ package io.maxbet.Elements;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-
+import java.time.Duration;
 import static io.maxbet.DriverManager.getDriver;
 
 public class BaseElement {
-    private By locator;
-    private String description;
+    private final By locator;
+    private final String description;
     private String lastBorder;
     private WebElement lastElement;
 
@@ -44,21 +45,36 @@ public class BaseElement {
             }
         }
     }
-
     public boolean isExists(long...timeout){
-        long currentTimeout = 5;
-        if(timeout.length > 0) {
-            currentTimeout = timeout[0];
-        }
-        WebDriverWait wait = new WebDriverWait(getDriver(),currentTimeout);
+        long currentTimeout = timeout.length > 0 ? timeout[0] : 10;
+
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(currentTimeout));
         try {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+            WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
             get();
             return true;
-        } catch (Exception e) {
+        } catch (TimeoutException e) {
             return false;
         }
     }
+    public boolean invisibilityOfElementLocated(long... timeout) {
+        long currentTimeout = timeout.length > 0 ? timeout[0] : 15;
+
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(currentTimeout));
+        try {
+            return wait.until(ExpectedConditions.invisibilityOfElementLocated(locator));
+        } catch (TimeoutException e) {
+            return false;
+        }
+    }
+
+    public void waitUntilInvisibilityOfElementLocated(By elementLocator, long... timeout) {
+        long currentTimeout = timeout.length > 0 ? timeout[0] : 10;
+
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(currentTimeout));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(elementLocator));
+    }
+
 
     public boolean isEnable(long... timeout) {
         if(isExists(timeout)){
@@ -68,9 +84,9 @@ public class BaseElement {
     }
 
     public void verify(){
-        Assert.assertTrue(isExists());
+        Assert.assertTrue(
+                isExists(), "Element is not visible: " + description + ". Locator: " + locator);
     }
-
 
     private void highlightElement(WebElement element){
         unhighlightLast();

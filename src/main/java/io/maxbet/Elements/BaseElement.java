@@ -1,9 +1,6 @@
 package io.maxbet.Elements;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import io.maxbet.DriverManager;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -11,8 +8,8 @@ import java.time.Duration;
 import static io.maxbet.DriverManager.getDriver;
 
 public class BaseElement {
-    private final By locator;
-    private final String description;
+    private By locator;
+    private String description;
     private String lastBorder;
     private WebElement lastElement;
 
@@ -29,13 +26,11 @@ public class BaseElement {
         highlight(element);
         return element;
     }
-
     private void highlight(WebElement element) {
         unhighlight();
         lastElement = element;
         lastBorder = (String) ((JavascriptExecutor) getDriver()).executeScript("arguments[0].setAttribute('style', arguments[1]);", element, "color: red; border: 2px solid yellow;");
     }
-
     private void unhighlight() {
         if (lastElement != null) {
             try {
@@ -67,44 +62,62 @@ public class BaseElement {
             return false;
         }
     }
-
+    public void waitPageStability() {
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className("mask")));
+         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".spinner")));
+    }
     public void waitUntilInvisibilityOfElementLocated(By elementLocator, long... timeout) {
         long currentTimeout = timeout.length > 0 ? timeout[0] : 10;
 
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(currentTimeout));
         wait.until(ExpectedConditions.invisibilityOfElementLocated(elementLocator));
     }
-
-
-    public boolean isEnable(long... timeout) {
-        if(isExists(timeout)){
-            return get().isEnabled();
-        }
-        return false;
-    }
-
     public void verify(){
         Assert.assertTrue(
                 isExists(), "Element is not visible: " + description + ". Locator: " + locator);
     }
-
-    private void highlightElement(WebElement element){
+    public void highlightElement(WebElement element){
         unhighlightLast();
         lastElement = element;
-        lastBorder = (String)((JavascriptExecutor) getDriver()).executeScript("arguments[0].setAttribute('style, arguments[1]);",element, "color:yellow; border: 2px solid yellow;");
+        lastBorder = (String)((JavascriptExecutor) getDriver()).executeScript("arguments[0].setAttribute('style', arguments[1]);",element, "color:yellow; border: 2px solid yellow;");
     }
-
     private void unhighlightLast(){
         if (lastElement != null){
             try {
-                ((JavascriptExecutor) getDriver()). executeScript("arguments[0].setAttribute('style, arguments[1]);", lastElement, lastBorder);
+                ((JavascriptExecutor) getDriver()). executeScript("arguments[0].setAttribute('style', arguments[1]);", lastElement, lastBorder);
             } finally{
                 lastElement = null;
             }
         }
     }
 
-    private void waitUntil(){
-
+    protected WebDriver driver;
+    protected WebDriverWait wait;
+    protected final By mask =
+            By.cssSelector(".mask");
+    public BaseElement() {
+        driver = DriverManager.getDriver();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    }
+//    protected void waitForPageReady() {
+//        PopupHandler.acceptCookiesIfPresent();
+//        wait.until(ExpectedConditions.invisibilityOfElementLocated(mask));
+//    }
+//    public void click(By locator) {
+//        waitForPageReady();
+//        WebElement element =
+//                wait.until(ExpectedConditions.elementToBeClickable(locator));
+//        element.click();
+//    }
+    protected void waitForMaskToDisappear() {
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(mask));
+    }
+    public void clickElement(By locator) {
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(mask));
+        WebElement element =
+                wait.until(ExpectedConditions.elementToBeClickable(locator));
+        ((JavascriptExecutor) driver)
+                .executeScript("arguments[0].click();", element);
     }
 }

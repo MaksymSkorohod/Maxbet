@@ -32,4 +32,16 @@ public class LobbyTests extends TestBase{
         new LobbyPage()
                 .enterSearchText("Mad Cars");
     }
+    @Test(description = "Open the 'Promotions' page")
+    public void openPromotionsPage(){
+        new LobbyPage()
+                .clickOnPromotions()
+                .getWelcomeOffersBtn().verify();
+    }
+    @Test(description = "Open the 'Tournaments' page")
+    public void openTournamentsPage(){
+        new LobbyPage()
+                .clickOnTournaments()
+                .getTournamentsPageNavList().verify();
+    }
 }

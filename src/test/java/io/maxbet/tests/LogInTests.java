@@ -26,7 +26,7 @@ public class LogInTests extends TestBase {
                 .clickOnPage()
                 .clickOnAcceptNotification();
         Assert.assertTrue(
-                new LoginPage().getUserInfo().isExists(15),//15
+                new LoginPage().getUserInfo().isExists(15),
                 "User info is not visible after successful login"
         );
     }

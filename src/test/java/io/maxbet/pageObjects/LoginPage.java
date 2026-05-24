@@ -1,35 +1,31 @@
 package io.maxbet.pageObjects;
+import io.maxbet.Elements.BaseElement;
 import io.maxbet.Elements.Button;
 import io.maxbet.Elements.InputField;
 import io.maxbet.Elements.TextField;
 import io.qameta.allure.Step;
 import lombok.Getter;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import java.time.Duration;
 import static io.maxbet.DriverManager.getDriver;
 
-public class LoginPage {
-    private By cookieBannerShadowHost = By.cssSelector("#usercentrics-root");
+public class LoginPage extends BaseElement {
+    private final By cookieBannerShadowHost = By.cssSelector("#usercentrics-root");
     private final Button acceptAllButton = new Button(By.id("accept"), "Accept All button");
-    private By loginBtn = By.cssSelector(".btn-secondary.auth.xs-sm");
-    private By registerButton = By.xpath("//button[@class='btn-primary auth xs-sm']");
-    private By authContainer = By.cssSelector(".auth-container");
-    private By userNameField = By.id("usernameOrEmail");
-    private By passwordField = By.id("password");
-    private By conectionBtn = By.cssSelector("#auth-modal .btn-primary.lg");
-    private By mask = By.cssSelector(".mask");
-    private By notificationDialog = By.cssSelector(".mat-mdc-dialog-surface.mdc-dialog__surface");
-    private By notificationAccept = By.cssSelector(".mat-mdc-dialog-surface button.btn-primary.lg");
-    private By notificationDecline = By.cssSelector("button[class='btn btn-transparent lg ng-star-inserted']");
-    private final By userInfoLocator = By.cssSelector(
-            "div[class='right-block notific-padding'] mb-header-user-info[class='user-info']"
-    );
+    private final By loginBtn = By.cssSelector(".btn-secondary.auth.xs-sm");
+    private final By registerButton = By.xpath("//button[@class='btn-primary auth xs-sm']");
+    private final By authContainer = By.cssSelector(".auth-container");
+    private final By userNameField = By.id("usernameOrEmail");
+    private final By passwordField = By.id("password");
+    private final By connectionBtn = By.cssSelector("#auth-modal .btn-primary.lg");
+    private final By mask = By.cssSelector(".mask");
+    private final By notificationDialog = By.cssSelector(".mat-mdc-dialog-surface.mdc-dialog__surface");
+    private final By notificationAccept = By.cssSelector(".mat-mdc-dialog-surface button.btn-primary.lg");
+    private final By notificationDecline = By.cssSelector("button[class='btn btn-transparent lg ng-star-inserted']");
+    private final By userInfoLocator = By.cssSelector("div[class='right-block notific-padding'] mb-header-user-info[class='user-info']");
 
 
     @Getter
@@ -45,7 +41,7 @@ public class LoginPage {
     @Getter
     InputField PasswordField = new InputField(passwordField,"The Password input field");
     @Getter
-    Button ConnectionButton =  new Button(conectionBtn,"The 'Login button'");
+    Button ConnectionButton =  new Button(connectionBtn,"The 'Login button'");
     @Getter
     Button NotificationDialog = new Button(notificationDialog,"The Notification Dialog");
     @Getter
@@ -87,7 +83,16 @@ public class LoginPage {
             }
         });
     }
-
+    @Step("Handle Cookie Popup if present")
+    public LoginPage handleCookieConsent() {
+        try {
+            // Встановлюємо мінімальний implicit wait або використовуємо FluentWait
+            acceptAllButton.clickButtonInShadowRootByJs("usercentrics-cmp-ui", "accept", 5);
+        } catch (TimeoutException | NoSuchElementException e) {
+            // Попап не з'явився — це нормально, ігноруємо
+        }
+        return this;
+    }
     @Step("Click Accept All button with JS")
     public LoginPage clickAcceptButtonJs(){
         acceptAllButton.clickButtonInShadowRootByJs("usercentrics-cmp-ui", "accept", 15);

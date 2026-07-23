@@ -19,7 +19,21 @@ public class LobbyPage extends BaseElement {
             "div[class='right-block notific-padding'] mb-header-user-info[class='user-info']"
     );
     private final By userNameBlock = By.cssSelector("div[class='user-name-block'] div[class='name']");
-    private final By logoutBtn = By.cssSelector("div[class='menu'] mb-logout-menu mb-menu-container");
+    private final By headerCasinoBtn = By.cssSelector("a[data-fs-element='Nav.Global.NAV_Casino']");
+    private final By headerLiveCasinoBtn = By.cssSelector("a[data-fs-element='Nav.Global.NAV_LiveCasino']");
+    private final By headerLottoBtn = By.cssSelector("a[data-fs-element='Nav.Global.NAV_Lotto']");
+    private final By headerBettingBtn = By.xpath("//a[contains(text(),'Betting')]");
+    private final By depositBtn = By.cssSelector(".btn-primary.xs.deposit");
+    private final By depositModal = By.cssSelector(".deposit-dialog");
+    private final By depositModalTitle = By.cssSelector(".heading");
+    private final By closeDepositModalBtn = By.cssSelector(".btn-transparent.xs.close");
+    private final By backBtnDeposit = By.cssSelector(".mb-nav-back__link");
+    private final By bankCardPM = By.cssSelector("li[data-fs-properties='{\"method\":\"SafeCharge\"}']");
+    private final By abonPM = By.cssSelector("li[data-fs-properties='{\"method\":\"SafeCharge_Abon\"}']");
+    private final By paySafePM = By.cssSelector("li[data-fs-properties='{\"method\":\"SafeCharge_PaySafeCard\"}']");
+    private final By externalCashierPM = By.cssSelector("li[data-fs-properties='{\"method\":\"ExternalCashier\"}']");
+    private final By googlePayPM = By.cssSelector("li[data-fs-properties='{\"method\":\"SafeCharge_GooglePay\"}']");
+    private final By oktoCashPM = By.cssSelector("li[data-fs-properties='{\"method\":\"OktoCash\"}']");
     private final By searchField = By.xpath("(//mb-lobby-search)[2]");
     private final By searchModal = By.cssSelector(".mat-mdc-dialog-component-host.ng-star-inserted");
     private final By searchModalTitle = By.cssSelector("section[class='search-action'] div[class='title']");
@@ -36,9 +50,23 @@ public class LobbyPage extends BaseElement {
     @Getter
     private final Button UserInfo = new Button(userInfoLocator, "The User Info button");
     @Getter
-    private final TextField UserName = new TextField(userNameBlock, "The User Name");
+    Button HeaderCasinoBtn = new Button(headerCasinoBtn, "The 'Casino' button");
     @Getter
-    private final Button Logout = new Button(logoutBtn, "The Logout button");
+    Button HeaderLiveCasinoBtn = new Button(headerLiveCasinoBtn, "The 'Live Casino' button");
+    @Getter
+    Button HeaderLottoBtn = new Button(headerLottoBtn, "The 'Lotto' button");
+    @Getter
+    Button HeaderBettingBtn = new Button(headerBettingBtn, "The 'Betting' button");
+    @Getter
+    Button DepositButton = new Button(depositBtn, "The 'Deposit' button");
+    @Getter
+    TextField DepositModal = new TextField(depositModal, "The Deposit modal");
+    @Getter
+    TextField DepositModalTitle = new TextField(depositModalTitle, "The Deposit modal title");
+    @Getter
+    Button CloseDepositModalBtn = new Button(closeDepositModalBtn, "The 'Close' button in the Deposit modal");
+    @Getter
+    private final TextField UserName = new TextField(userNameBlock, "The User Name");
     @Getter
     Button SearchButton = new Button(searchField, "The Search button");
     @Getter
@@ -64,21 +92,52 @@ public class LobbyPage extends BaseElement {
     @Getter
     Button VipBtn = new Button(vipBtn, "The 'VIP' button");
 
+
     @Step("Click on the 'User Info' button")
     public ProfilePage clickOnUserInfo() {
         waitUntilMaskDisappears();
         getUserInfo().clickButton();
         return new ProfilePage();
     }
+    @Step("Open the 'Casino' page")
+    public LobbyPage openCasinoPage() {
+        waitUntilMaskDisappears();
+        getHeaderCasinoBtn().clickButton();
+        return this;
+    }
+    @Step("Open the 'Live Casino' page")
+    public LiveCasinoPage openLiveCasinoPage() {
+        waitUntilMaskDisappears();
+        getHeaderLiveCasinoBtn().clickButton();
+        return new LiveCasinoPage();
+    }
+    @Step("Open the 'Lotto' page")
+    public LottoPage openLottoPage() {
+        waitUntilMaskDisappears();
+        getHeaderLottoBtn().clickButton();
+        return new LottoPage();
+    }
+    @Step("Open the 'Betting' page")
+    public BettingPage openBettingPage() {
+        waitUntilMaskDisappears();
+        getHeaderBettingBtn().clickButton();
+        return new BettingPage();
+    }
+    @Step("Click on the 'Deposit' button")
+    public DepositPage clickOnDeposit() {
+        waitUntilMaskDisappears();
+        getDepositButton().clickButton();
+        return new DepositPage();
+    }
+    @Step("Click on the 'Close' button in the Deposit modal")
+    public LobbyPage clickOnCloseDepositModal() {
+        getCloseDepositModalBtn().clickButton();
+        return this;
+    }
     @Step("Wait until page mask disappears")
     public void waitUntilMaskDisappears() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(15));
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));//15
         wait.until(ExpectedConditions.invisibilityOfElementLocated(mask));
-    }
-    @Step("Click on the 'Logout' button")
-    public LobbyPage clickOnLogout() {
-        getLogout().clickButton();
-        return this;
     }
     @Step("Click on the 'Search' button")
     public LobbyPage clickOnSearch() {
@@ -92,9 +151,8 @@ public class LobbyPage extends BaseElement {
         return this;
     }
     @Step("Enter search text")
-    public LobbyPage enterSearchText(String text) {
+    public void enterSearchText(String text) {
         getSearchForGame().setText(text);
-        return this;
     }
     @Step("Click on the 'For you' button")
     public LobbyPage clickOnPopularGames() {
@@ -107,9 +165,10 @@ public class LobbyPage extends BaseElement {
         return this;
     }
     @Step("Click on the 'Live Casino' button")
-    public LobbyPage clickOnLiveCasino() {
-        getLiveCasinoBtn().clickButton();
-        return this;
+    public LiveCasinoPage clickOnLiveCasino() {
+        waitUntilMaskDisappears();
+        getLiveCasinoBtn().click();
+        return new LiveCasinoPage();
     }
     @Step("Click on the 'Tournaments' button")
     public TournamentsPage clickOnTournaments() {
@@ -117,9 +176,9 @@ public class LobbyPage extends BaseElement {
         return new TournamentsPage();
     }
     @Step("Click on the 'Promotions' button")
-    public PromotionsPage clickOnPromotions() {
+    public PromoPage clickOnPromotions() {
         getPromotionsBtn().clickButton();
-        return new PromotionsPage();
+        return new PromoPage();
     }
     @Step("Click on the 'VIP' button")
     public VipPage clickOnVip() {

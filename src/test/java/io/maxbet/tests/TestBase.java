@@ -14,7 +14,9 @@ public class TestBase {
     public void logIn(){
         getDriver().get("https://dev.maxbet.ro/en");
      new LoginPage()
-                .clickAcceptButtonJs()
+                .acceptCookiesIfPresent()
+                .waitUntilMaskDisappears();
+     new LoginPage()
                 .clickOnLoginButton()
                 .enterUsername("James_Bond")
                 .enterPassword("Vfrcbv82")

@@ -1,21 +1,19 @@
 package io.maxbet.pageObjects;
 
-import io.maxbet.DriverManager;
 import io.maxbet.Elements.BaseElement;
 import io.maxbet.Elements.Button;
 import io.maxbet.Elements.TextField;
+import io.maxbet.tests.DepositPageTests;
 import io.qameta.allure.Step;
 import lombok.Getter;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class ProfilePage extends BaseElement {
     private final By mask = By.cssSelector(".mask");
     private final By accountInfoContainer = By.cssSelector(".account-info-container");
     private final By profileMenuContainer = By.cssSelector("div[class='menu'] mb-profile-menu div[class='menu-container']");
+    private final By depositBtnOnProfPage = By.cssSelector(".btn-secondary.link-item[iconposition='prefix'][iconpath='/assets/images/profile/user-account/deposit-icon-sm.svg']");
+    private final By withdrawBtnOnProfPage = By.cssSelector(".btn-secondary.link-item.withdrawals");
     private final By myAccountBtn = By.cssSelector(".mb-menu-item.variant--compact[link='/profile']");
     private final By bonusesBtn = By.cssSelector("div[class='menu'] mb-menu-item:nth-child(2) a:nth-child(1)");
     private final By pendingWdBtn = By.cssSelector(".mb-menu-item.variant--compact[link='/profile/pending-withdrawals']");
@@ -32,6 +30,10 @@ public class ProfilePage extends BaseElement {
     TextField AccountInfo = new TextField(accountInfoContainer, "The Account Info");
     @Getter
     TextField ProfileMenu = new TextField(profileMenuContainer, "The Profile Menu");
+    @Getter
+    Button DepositBtnOnProfPage = new Button(depositBtnOnProfPage, "The 'Deposit' button on the Profile page");
+    @Getter
+    Button WithdrawBtnOnProfPage = new Button(withdrawBtnOnProfPage, "The 'Withdraw' button on the Profile page");
     @Getter
     Button MyAccountBtn = new Button(myAccountBtn, "The 'My Account' button");
     @Getter
@@ -53,6 +55,12 @@ public class ProfilePage extends BaseElement {
     @Getter
     Button Logout = new Button(logoutBtn, "The 'Logout' button");
 
+    @Step("Click on the Deposit button from the Profile page")
+    public DepositPageTests clickOnDepositBtnOnProfPage() {
+        AccountInfo.waitPageStability();
+        getDepositBtnOnProfPage().clickButton();
+        return new DepositPageTests();
+    }
     @Step("Click on the 'My Account' button")
     public ProfilePage clickOnMyAccount() {
         getMyAccountBtn().clickButton();

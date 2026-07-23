@@ -19,9 +19,6 @@ public class Button extends TextField {
         WebElement element = wait.until(ExpectedConditions.elementToBeClickable(getLocator()));
         element.click();
     }
-    public void clickButtonJs(){
-        ((JavascriptExecutor) getDriver()).executeScript("arguments[0].click();", get());
-    }
     public void clickAnywhereOnPage() {
 
         Actions actions = new Actions(getDriver());
@@ -31,6 +28,18 @@ public class Button extends TextField {
                 .click()
                 .perform();
     }
+
+    public void click(By locator) {
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+
+        try {
+            wait.until(ExpectedConditions.elementToBeClickable(locator)).click();
+        } catch (StaleElementReferenceException e) {
+            wait.until(ExpectedConditions.elementToBeClickable(locator)).click();
+        }
+    }
+
     public void clickButtonInShadowRoot(By shadowHostLocator) {
         clickButtonInShadowRoot(shadowHostLocator, 10);
     }
@@ -74,6 +83,37 @@ public class Button extends TextField {
             );
             return Boolean.TRUE.equals(result);
         });
+    }
+    public boolean clickButtonInShadowRootByJsIfPresent(
+            String shadowHostId,
+            String buttonId,
+            long timeoutSeconds) {
+
+        try {
+
+            WebDriverWait wait = new WebDriverWait(
+                    getDriver(),
+                    Duration.ofSeconds(timeoutSeconds));
+
+            return wait.until(driver -> {
+
+                Object result = ((JavascriptExecutor) driver).executeScript(
+                        "const host = document.getElementById(arguments[0]);" +
+                                "if (!host || !host.shadowRoot) return false;" +
+                                "const button = host.shadowRoot.getElementById(arguments[1]);" +
+                                "if (!button) return false;" +
+                                "button.click();" +
+                                "return true;",
+                        shadowHostId,
+                        buttonId
+                );
+
+                return Boolean.TRUE.equals(result);
+            });
+
+        } catch (TimeoutException e) {
+            return false;
+        }
     }
 
 

@@ -90,4 +90,13 @@ public class ProfileTests extends TestBase{
         profilePage
                 .clickOnLogout();
     }
+    @Test(description = "Open the 'Deposit' page from the 'Profile' page")
+    public void openDepositPageFromProfile(){
+        profilePage
+                .getProfileMenu().verify();
+        profilePage
+                .clickOnDepositBtnOnProfPage() ;
+        new DepositPage()
+                .getDepositPageTitle().verify();
+    }
 }

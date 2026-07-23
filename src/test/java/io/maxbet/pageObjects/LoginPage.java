@@ -13,11 +13,13 @@ import java.time.Duration;
 import static io.maxbet.DriverManager.getDriver;
 
 public class LoginPage extends BaseElement {
+
     private final By cookieBannerShadowHost = By.cssSelector("#usercentrics-root");
     private final Button acceptAllButton = new Button(By.id("accept"), "Accept All button");
     private final By loginBtn = By.cssSelector(".btn-secondary.auth.xs-sm");
-    private final By registerButton = By.xpath("//button[@class='btn-primary auth xs-sm']");
+    private final By registerButton = By.cssSelector(".btn-primary.auth.xs-sm");
     private final By authContainer = By.cssSelector(".auth-container");
+    private final By logoOnLoginModal = By.cssSelector("div[class='header'] mb-logo");
     private final By userNameField = By.id("usernameOrEmail");
     private final By passwordField = By.id("password");
     private final By connectionBtn = By.cssSelector("#auth-modal .btn-primary.lg");
@@ -26,7 +28,52 @@ public class LoginPage extends BaseElement {
     private final By notificationAccept = By.cssSelector(".mat-mdc-dialog-surface button.btn-primary.lg");
     private final By notificationDecline = By.cssSelector("button[class='btn btn-transparent lg ng-star-inserted']");
     private final By userInfoLocator = By.cssSelector("div[class='right-block notific-padding'] mb-header-user-info[class='user-info']");
-
+    private final By loginTab = By.cssSelector("div[class='tab-item']");
+    private final By forgotPasswordLink = By.cssSelector(".only-text-white");
+    private final By forgotPasswordTitle = By.cssSelector("div[class='title']");
+    private final By emailInputForRestorePassword = By.id("email");
+    private final By reCaptchaBtn = By.cssSelector(".cdk-overlay-container");
+    private final By requestPasswordBtn = By.cssSelector(".mb-button.btn-primary.lg");
+    //Step1
+    private final By registerTab = By.cssSelector(".tab-item.active");
+    private final By registerTabLocator = By.cssSelector("div[class='top-container'] div[class='title']");
+    private final By firstName = By.cssSelector("input[name='firstName']");
+    private final By lastName = By.cssSelector("input[name='lastName']");
+    private final By cnpCode = By.cssSelector(".input-number.ng-untouched.ng-pristine.ng-invalid");
+    private final By cityTown = By.cssSelector("input[role='combobox']");
+    private final By cityTownOptions = By.cssSelector("#mat-option-1");
+    private final By address = By.cssSelector("input[name='street-address']");
+    private final By termsAndConditionCheckbox = By.cssSelector("label[for='terms_and_conditions-control']");
+    private final By marketingAllCheckbox = By.cssSelector("label[for='marketing_all-control']");
+    private final By continueBtn = By.cssSelector(".btn-primary.sm[mbfullstorytrackedelement='Auth.Registration.BTN_Continue']");
+    //Step2
+    private final By registerTabStep2 = By.cssSelector(".tab-item.active");
+    private final By emailAddress = By.cssSelector("input[name='email']");
+    private final By phoneNumber = By.cssSelector("input[placeholder='07XX XXX XXX']");
+    private final By userName = By.cssSelector("input[name='username']");
+    private final By passwordInput = By.cssSelector("#password");
+    private final By hideModePasswordBtn = By.cssSelector(".inside-content");
+    private final By currencyRonBtn = By.cssSelector("label[for='RON']");
+    private final By currencyEurBtn = By.cssSelector("label[for='EUR']");
+    private final By signupBtn = By.cssSelector(".mb-button.btn-primary.sm[mbfullstorytrackedelement='Auth.Registration.BTN_Signup']");
+    //Warning messages for Step 1
+    private final By firstNameRequired = By.xpath("//span[text()=\"First name is required\"]");
+    private final By firstNameNoNumbers = By.xpath("//span[text()=\"First name cannot include numbers\"]");
+    private final By lastNameRequired = By.xpath("//span[text()=\"Last name is required\"]");
+    private final By lastNameNoNumbers = By.xpath("//span[text()=\"Last name cannot include numbers\"]");
+    private final By cnpRequired = By.xpath("//span[text()=\"Cnp is required\"]");
+    private final By cnpInvalid = By.xpath("//span[text()=\"Cnp length should be 13\"]");
+    private final By cityTownRequired = By.xpath("//span[text()=\"This field is required\"]");
+    private final By cityTownInvalid = By.xpath("//span[text()=\"Field is invalid\"]");
+    private final By addressRequired = By.xpath("//span[text()=\"Address is required\"]");
+    private final By termsAndConditionRequired = By.cssSelector("div[class='error ng-star-inserted']");
+    //Warning messages for Step 2
+    private final By emailRequired = By.xpath("//span[text()=\"Email address is required\"]");
+    private final By emailInvalid = By.xpath("//span[text()=\"Please enter correct email address\"]");
+    private final By phoneNumberRequired = By.xpath("//span[text()=\"Mobile number is required\"]");
+    private final By phoneNumberInvalid = By.xpath("//span[text()=\"Please input the mobile number in the correct format (ex: 07xxxxxxxx)\"]");
+    private final By userNameRequired = By.xpath("//span[text()=\"Username is required\"]");
+    private final By passwordRequired = By.xpath("//span[text()=\"Password is required\"]");
 
     @Getter
     TextField PrivacySettings = new TextField(cookieBannerShadowHost,"Title of Privacy Settings popup");
@@ -36,6 +83,8 @@ public class LoginPage extends BaseElement {
     Button RegisterButton = new Button(registerButton,"The 'Register button'");
     @Getter
     TextField LoginRegisterModal = new TextField(authContainer, "The Login/Register modal");
+    @Getter
+    TextField LogoOnLoginModal = new TextField(logoOnLoginModal, "The Logo on the Login/Register modal");
     @Getter
     InputField UserNameField = new InputField(userNameField,"The Username/Email input field");
     @Getter
@@ -49,40 +98,96 @@ public class LoginPage extends BaseElement {
     @Getter
     Button NotificationDecline = new Button(notificationDecline,"The 'Decline' button in the Notification Dialog");
     @Getter
-    private final Button userInfo = new Button(userInfoLocator, "The User Info button");
+    Button userInfo = new Button(userInfoLocator, "The User Info button");
+    @Getter
+    Button ForgotPasswordLink = new Button(forgotPasswordLink, "The Forgot Password link");
+    @Getter
+    TextField ForgotPasswordTitle = new TextField(forgotPasswordTitle, "The Forgot Password title");
+    @Getter
+    InputField EmailInputForRestorePassword = new InputField(emailInputForRestorePassword, "The Email input field for Restore Password");
+    @Getter
+    Button ReCaptchaBtn = new Button(reCaptchaBtn, "The ReCaptcha button");
+    @Getter
+    Button RequestPasswordBtn = new Button(requestPasswordBtn, "The Request Password button");
 
-    @Step("Click Accept All button")
-    public void clickAcceptCookies() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(20));
-        wait.until(driver -> {
-            try {
-                JavascriptExecutor js = (JavascriptExecutor) driver;
+    //Registration Step 1
+    @Getter
+    Button LoginTab = new Button(loginTab, "The 'Login' tab");
+    @Getter
+    Button RegisterTab = new Button(registerTab, "The 'Register' tab");
+    @Getter
+    TextField RegisterTabLocator = new TextField(registerTabLocator, "The 'Register' tab locator");
+    @Getter
+    InputField FirstName = new InputField(firstName, "The First Name input field");
+    @Getter
+    InputField LastName = new InputField(lastName, "The Last Name input field");
+    @Getter
+    InputField CnpCode = new InputField(cnpCode, "The Cnp Code input field");
+    @Getter
+    InputField CityTown = new InputField(cityTown, "The City Town input field");
+    @Getter
+    Button CityTownOptions = new Button(cityTownOptions, "The City Town options");
+    @Getter
+    InputField Address = new InputField(address, "The Address input field");
+    @Getter
+    Button TermsAndConditionCheckbox = new Button(termsAndConditionCheckbox, "The Terms and Condition Checkbox");
+    @Getter
+    Button MarketingAllCheckbox = new Button(marketingAllCheckbox, "The Marketing All Checkbox");
+    @Getter
+    Button ContinueBtn = new Button(continueBtn, "The Continue button");
 
-                WebElement button = (WebElement) js.executeScript(
-                        "const host = document.querySelector('usercentrics-cmp-ui');" +
-                                "if (!host) return null;" +
+    //Registration Step 2
+    @Getter
+    InputField EmailAddress = new InputField(emailAddress, "The Email Address input field");
+    @Getter
+    InputField PhoneNumber = new InputField(phoneNumber, "The Phone Number input field");
+    @Getter
+    InputField UserNameInput = new InputField(userName, "The User Name input field");
+    @Getter
+    InputField PasswordInput = new InputField(passwordInput, "The Password input field");
+    @Getter
+    Button HideModePasswordBtn = new Button(hideModePasswordBtn, "The Hide Mode Password Button");
+    @Getter
+    Button CurrencyRonBtn = new Button(currencyRonBtn, "The Currency Ron Button");
+    @Getter
+    Button CurrencyEurBtn = new Button(currencyEurBtn, "The Currency Eur Button");
+    @Getter
+    Button SignupBtn = new Button(signupBtn, "The Signup Button");
 
-                                "const shadow1 = host.shadowRoot;" +
-                                "if (!shadow1) return null;" +
+    //Warnings
+    @Getter
+    TextField FirstNameRequired = new TextField(firstNameRequired, "The First Name Required Warning");
+    @Getter
+    TextField FirstNameNoNumbers = new TextField(firstNameNoNumbers, "The First Name No Numbers Warning");
+    @Getter
+    TextField LastNameRequired = new TextField(lastNameRequired, "The Last Name Required Warning");
+    @Getter
+    TextField LastNameNoNumbers = new TextField(lastNameNoNumbers, "The Last Name No Numbers Warning");
+    @Getter
+    TextField CnpRequired = new TextField(cnpRequired, "The Cnp Required Warning");
+    @Getter
+    TextField CnpInvalid = new TextField(cnpInvalid, "The Cnp Invalid Warning");
+    @Getter
+    TextField CityTownRequired = new TextField(cityTownRequired, "The City Town Required Warning");
+    @Getter
+    TextField CityTownInvalid = new TextField(cityTownInvalid, "The City Town Invalid Warning");
+    @Getter
+    TextField AddressRequired = new TextField(addressRequired, "The Address Required Warning");
+    @Getter
+    TextField TermsAndConditionRequired = new TextField(termsAndConditionRequired, "The Terms and Condition Required Warning");
+    @Getter
+    TextField EmailRequired = new TextField(emailRequired, "The Email Required Warning");
+    @Getter
+    TextField EmailInvalid = new TextField(emailInvalid, "The Email Invalid Warning");
+    @Getter
+    TextField PhoneNumberRequired = new TextField(phoneNumberRequired, "The Phone Number Required Warning");
+    @Getter
+    TextField PhoneNumberInvalid = new TextField(phoneNumberInvalid, "The Phone Number Invalid Warning");
+    @Getter
+    TextField UserNameRequired = new TextField(userNameRequired, "The User Name Required Warning");
+    @Getter
+    TextField PasswordRequired = new TextField(passwordRequired, "The Password Required Warning");
 
-                                "const innerHost = shadow1.querySelector('#usercentrics-root');" +
-                                "if (!innerHost) return null;" +
-
-                                "const shadow2 = innerHost.shadowRoot;" +
-                                "if (!shadow2) return null;" +
-
-                                "return shadow2.querySelector('button[data-testid=\"uc-accept-all-button\"]');"
-                );
-                if (button != null) {
-                    button.click();
-                    return true;
-                }
-                return false;
-            } catch (Exception e) {
-                return false;
-            }
-        });
-    }
     @Step("Handle Cookie Popup if present")
     public LoginPage handleCookieConsent() {
         try {
@@ -96,6 +201,18 @@ public class LoginPage extends BaseElement {
     @Step("Click Accept All button with JS")
     public LoginPage clickAcceptButtonJs(){
         acceptAllButton.clickButtonInShadowRootByJs("usercentrics-cmp-ui", "accept", 15);
+        return this;
+    }
+    @Step("Accept cookies if displayed")
+    public LoginPage acceptCookiesIfPresent() {
+        boolean accepted =
+                acceptAllButton.clickButtonInShadowRootByJsIfPresent(
+                        "usercentrics-cmp-ui",
+                        "accept",
+                        10);
+        if (accepted) {
+            System.out.println("Cookies accepted");
+        }
         return this;
     }
     @Step("Click on the 'Login' button from the Lobby page")
@@ -120,8 +237,27 @@ public class LoginPage extends BaseElement {
     }
     @Step("Enter the password")
     public LoginPage enterPassword(String password) {
-        getPasswordField().clear();
         getPasswordField().setText(password);
+        return this;
+    }
+    @Step("Click on the 'Forgot password' link")
+        public LoginPage clickOnForgotPasswordLink(){
+        getForgotPasswordLink().clickButton();
+        return this;
+    }
+    @Step("Click on the 'Forgot Password' title")
+    public LoginPage enterEmailIntoEmailInput(String email) {
+        getEmailInputForRestorePassword().setText(email);
+        return this;
+    }
+    @Step("Click on the 'ReCaptcha' button")
+    public LoginPage clickOnReCaptchaButton() {
+        getReCaptchaBtn().clickButton();
+        return this;
+    }
+    @Step("Click on the 'Request Password' button")
+    public LoginPage clickOnRequestPasswordButton() {
+        getRequestPasswordBtn().clickButton();
         return this;
     }
     @Step("Click on the 'Login' button from Login modal")
@@ -140,19 +276,113 @@ public class LoginPage extends BaseElement {
         return this;
     }
     @Step("Click on the 'Accept' button in the Notification Dialog")
-    public LobbyPage clickOnAcceptNotification() {
+    public void clickOnAcceptNotification() {
         waitUntilMaskDisappears();
         getNotificationAccept().clickButton();
         Assert.assertTrue(
-                getNotificationDialog().invisibilityOfElementLocated(20),
+                getNotificationDialog().invisibilityOfElementLocated(5),
                 "Notification dialog is still visible after clicking Accept"
         );
-        return new LobbyPage();
     }
     @Step("Click on the 'Decline' button in the Notification Dialog")
     public LoginPage clickOnDeclineNotification() {
         getNotificationDecline().clickButton();
         return this;
     }
-
+    //Actions for Registration Step 1
+    @Step("Click on the 'Login' tab from the Registration modal")
+    public LoginPage clickOnLoginTab() {
+        getLoginTab().clickButton();
+        return this;
+    }
+    @Step("Click on the 'Register' tab from the Login modal")
+    public LoginPage clickOnRegisterTab() {
+        getRegisterTab().clickButton();
+        return this;
+    }
+    @Step("Enter First Name")
+    public LoginPage enterFirstName(String firstName) {
+        getFirstName().setText(firstName);
+        return this;
+    }
+    @Step("Enter Last Name")
+    public LoginPage enterLastName(String lastName) {
+        getLastName().setText(lastName);
+        return this;
+    }
+    @Step("Enter Cnp Code")
+    public LoginPage enterCnpCode(String cnpCode) {
+        getCnpCode().setText(cnpCode);
+        return this;
+    }
+    @Step("Enter City Town")
+    public LoginPage enterCityTown(String cityTown) {
+        getCityTown().setText(cityTown);
+        return this;
+    }
+    @Step("Click on the City Town options")
+    public LoginPage clickOnCityTownOptions() {
+        getCityTownOptions().clickButton();
+        return this;
+    }
+    @Step("Enter Address")
+    public LoginPage enterAddress(String address) {
+        getAddress().setText(address);
+        return this;
+    }
+    @Step("Click on the Terms and Condition Checkbox")
+    public LoginPage clickOnTermsAndConditionCheckbox() {
+        getTermsAndConditionCheckbox().clickButton();
+        return this;
+    }
+    @Step("Click on the Marketing All Checkbox")
+    public LoginPage clickOnMarketingAllCheckbox() {
+        getMarketingAllCheckbox().clickButton();
+        return this;
+    }
+    @Step("Click on the Continue button")
+    public LoginPage clickOnContinueButton() {
+        getContinueBtn().clickButton();
+        return this;
+    }
+    //Actions for Registration Step 2
+    @Step("Enter Email Address")
+    public LoginPage enterEmailAddress(String emailAddress) {
+        getEmailAddress().setText(emailAddress);
+        return this;
+    }
+    @Step("Enter Phone Number")
+    public LoginPage enterPhoneNumber(String phoneNumber) {
+        getPhoneNumber().setText(phoneNumber);
+        return this;
+    }
+    @Step("Enter User Name")
+    public LoginPage enterUserName(String userName) {
+        getUserNameInput().setText(userName);
+        return this;
+    }
+    @Step("Enter the Password")
+    public LoginPage setPassword(String password){
+        getPasswordInput().setText(password);
+        return this;
+    }
+    @Step("Click on the Hide Mode Password Button")
+    public LoginPage clickOnHideModePasswordButton() {
+        getHideModePasswordBtn().clickButton();
+        return this;
+    }
+    @Step("Click on the Currency Ron Button")
+    public LoginPage clickOnRonCurrencyButton() {
+        getCurrencyRonBtn().clickButton();
+        return this;
+    }
+    @Step("Click on the Currency Eur Button")
+    public LoginPage clickOnEurCurrencyButton() {
+        getCurrencyEurBtn().clickButton();
+        return this;
+    }
+    @Step("Click on the Signup Button")
+    public void clickOnSignupButton() {
+        getSignupBtn().clickButton();
+    }
 }

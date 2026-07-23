@@ -12,6 +12,7 @@ public class BaseElement {
     private String description;
     private String lastBorder;
     private WebElement lastElement;
+    private By element;
 
     public BaseElement(By locator, String description){
         this.locator = locator;
@@ -28,15 +29,30 @@ public class BaseElement {
     }
     private void highlight(WebElement element) {
         unhighlight();
+
         lastElement = element;
-        lastBorder = (String) ((JavascriptExecutor) getDriver()).executeScript("arguments[0].setAttribute('style', arguments[1]);", element, "color: red; border: 2px solid yellow;");
+        lastBorder = (String) ((JavascriptExecutor) getDriver()).executeScript(
+                "const previousStyle = arguments[0].getAttribute('style');" +
+                        "arguments[0].setAttribute('style', arguments[1]);" +
+                        "return previousStyle;",
+                element,
+                "color: red; border: 2px solid yellow;"
+        );
+
     }
     private void unhighlight() {
         if (lastElement != null) {
             try {
-                ((JavascriptExecutor) getDriver()).executeScript("arguments[0].setAttribute('style', arguments[1]);", lastElement, lastBorder);
+                ((JavascriptExecutor) getDriver()).executeScript(
+                        "arguments[0].setAttribute('style', arguments[1] || '');",
+                        lastElement,
+                        lastBorder
+                );
+            } catch (StaleElementReferenceException | NoSuchElementException ignored) {
+                // Element is gone, nothing to restore.
             } finally {
                 lastElement = null;
+                lastBorder = null;
             }
         }
     }
@@ -77,19 +93,22 @@ public class BaseElement {
         Assert.assertTrue(
                 isExists(), "Element is not visible: " + description + ". Locator: " + locator);
     }
-    public void highlightElement(WebElement element){
-        unhighlightLast();
-        lastElement = element;
-        lastBorder = (String)((JavascriptExecutor) getDriver()).executeScript("arguments[0].setAttribute('style', arguments[1]);",element, "color:yellow; border: 2px solid yellow;");
+
+    public void waitForElementToBeClickable(By locator) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.elementToBeClickable(locator));
     }
-    private void unhighlightLast(){
-        if (lastElement != null){
-            try {
-                ((JavascriptExecutor) getDriver()). executeScript("arguments[0].setAttribute('style', arguments[1]);", lastElement, lastBorder);
-            } finally{
-                lastElement = null;
-            }
-        }
+    public String getCurrentUrl() {
+        return driver.getCurrentUrl();
+    }
+    public void printCurrentUrl() {
+        System.out.println("Current URL: " + driver.getCurrentUrl());
+    }
+    public boolean isUrlPathContains(String expectedPart) {
+        return driver.getCurrentUrl().contains(expectedPart);
+    }
+    public boolean isUrlContains(String text) {
+        return driver.getCurrentUrl().contains(text);
     }
 
     protected WebDriver driver;
@@ -100,19 +119,31 @@ public class BaseElement {
         driver = DriverManager.getDriver();
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
-//    protected void waitForPageReady() {
-//        PopupHandler.acceptCookiesIfPresent();
-//        wait.until(ExpectedConditions.invisibilityOfElementLocated(mask));
-//    }
-//    public void click(By locator) {
-//        waitForPageReady();
-//        WebElement element =
-//                wait.until(ExpectedConditions.elementToBeClickable(locator));
-//        element.click();
-//    }
-    protected void waitForMaskToDisappear() {
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(mask));
+    private static final long DEFAULT_CLICK_TIMEOUT_SECONDS = 10;
+
+    public void click() {
+        WebElement clickableElement = waitUntilClickable(DEFAULT_CLICK_TIMEOUT_SECONDS);
+        try {clickableElement.click();}
+        catch (ElementClickInterceptedException e) {
+            clickWithJavaScript(clickableElement);
+        }
     }
+    private WebElement waitUntilClickable(long timeoutSeconds) {
+        WebElement clickableElement = new WebDriverWait(
+                getDriver(),
+                Duration.ofSeconds(timeoutSeconds)
+        ).until(ExpectedConditions.elementToBeClickable(getLocator()));
+
+        highlight(clickableElement);
+        return clickableElement;
+    }
+    private void clickWithJavaScript(WebElement clickableElement) {
+        ((JavascriptExecutor) getDriver()).executeScript(
+                "arguments[0].click();",
+                clickableElement
+        );
+    }
+
     public void clickElement(By locator) {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(mask));
         WebElement element =

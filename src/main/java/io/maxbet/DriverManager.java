@@ -18,13 +18,27 @@ public class DriverManager {
         }
         return threadDriver.get();
     }
-
-    private static void initDriver() {
+//    private static void initDriver() {
+//        boolean headless = Boolean.parseBoolean(
+//                System.getProperty("headless", "false"));
 //        ChromeOptions options = new ChromeOptions();
+//        // common settings
 //        options.addArguments("--disable-dev-shm-usage");
 //        options.addArguments("--no-sandbox");
 //        options.addArguments("--disable-gpu");
-//        options.addArguments("--headless=new");
+//        if (headless) {
+//            options.addArguments("--headless=new");
+//            options.addArguments("--window-size=1920,1080");
+//        }
+//        WebDriverManager.chromedriver().setup();
+//        threadDriver.set(new ChromeDriver(options));
+//
+//        if (!headless) {
+//            threadDriver.get().manage().window().maximize();
+//        }
+//    }
+
+    private static void initDriver() {
         String browser = System.getProperty("browser", "chrome");
         if (browser.equalsIgnoreCase("chrome")) {
             WebDriverManager.chromedriver().setup();
@@ -32,10 +46,23 @@ public class DriverManager {
         }
         threadDriver.get().manage().window().maximize();
     }
+//    Headless only option
+//    private static void initDriver() {
+//    ChromeOptions options = new ChromeOptions();
+//    options.addArguments("--headless=new");
+//    options.addArguments("--window-size=1920,1080");
+//    options.addArguments("--disable-dev-shm-usage");
+//    options.addArguments("--no-sandbox");
+//
+//    WebDriverManager.chromedriver().setup();
+//    threadDriver.set(new ChromeDriver(options));
+//    }
 
-    public static void killDriver(){
-        threadDriver.get().quit();
-        threadDriver.remove();
+    public static void killDriver() {
+        if (threadDriver.get() != null) {
+            threadDriver.get().quit();
+            threadDriver.remove();
+        }
     }
 
     public static void goTo(String url) {

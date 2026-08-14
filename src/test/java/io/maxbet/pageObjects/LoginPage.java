@@ -9,10 +9,14 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.time.Duration;
 import static io.maxbet.DriverManager.getDriver;
 
 public class LoginPage extends BaseElement {
+
+    private static final Logger log = LogManager.getLogger(LoginPage.class);
 
     private final By cookieBannerShadowHost = By.cssSelector("#usercentrics-root");
     private final Button acceptAllButton = new Button(By.id("accept"), "Accept All button");
@@ -25,9 +29,9 @@ public class LoginPage extends BaseElement {
     private final By connectionBtn = By.cssSelector("#auth-modal .btn-primary.lg");
     private final By mask = By.cssSelector(".mask");
     private final By notificationDialog = By.cssSelector(".mat-mdc-dialog-surface.mdc-dialog__surface");
-    private final By notificationAccept = By.cssSelector(".mat-mdc-dialog-surface button.btn-primary.lg");
+    private final By notificationAccept = By.cssSelector("button[class='mb-button btn btn-primary lg ng-star-inserted']");
     private final By notificationDecline = By.cssSelector("button[class='btn btn-transparent lg ng-star-inserted']");
-    private final By userInfoLocator = By.cssSelector("div[class='right-block notific-padding'] mb-header-user-info[class='user-info']");
+    private final By userInfoLocator = By.cssSelector("div.right-block.notific-padding mb-header-user-info.user-info");
     private final By loginTab = By.cssSelector("div[class='tab-item']");
     private final By forgotPasswordLink = By.cssSelector(".only-text-white");
     private final By forgotPasswordTitle = By.cssSelector("div[class='title']");
@@ -55,7 +59,18 @@ public class LoginPage extends BaseElement {
     private final By hideModePasswordBtn = By.cssSelector(".inside-content");
     private final By currencyRonBtn = By.cssSelector("label[for='RON']");
     private final By currencyEurBtn = By.cssSelector("label[for='EUR']");
-    private final By signupBtn = By.cssSelector(".mb-button.btn-primary.sm[mbfullstorytrackedelement='Auth.Registration.BTN_Signup']");
+    private final By signupBtn = By.cssSelector(".mb-button.btn-primary.sm[mbbutton='primary'][mbfullstorytrackedelement='Auth.Registration.BTN_Signup']");
+    private final By loader = By.cssSelector("#mb-root mb-busy-indicator .loader");
+
+    //Successful registration modal
+    private final By successfulRegistrationModal = By.cssSelector(".auth-container");
+    private final By successfulRegistrationModalCloseBtn = By.cssSelector(".close.desktop");
+    private final By successfulRegistrationTitle = By.cssSelector("div[class='registration-success'] div[class='title']");
+    private final By codeInputCell0 = By.cssSelector("input[id='0']");
+    private final By codeInputCell1 = By.cssSelector("input[id='1']");
+    private final By codeInputCell2 = By.cssSelector("input[id='2']");
+    private final By codeInputCell3 = By.cssSelector("input[id='3']");
+    private final By continueActivationBtn = By.cssSelector("div[class='registration-success'] div[class='title']");
     //Warning messages for Step 1
     private final By firstNameRequired = By.xpath("//span[text()=\"First name is required\"]");
     private final By firstNameNoNumbers = By.xpath("//span[text()=\"First name cannot include numbers\"]");
@@ -98,7 +113,7 @@ public class LoginPage extends BaseElement {
     @Getter
     Button NotificationDecline = new Button(notificationDecline,"The 'Decline' button in the Notification Dialog");
     @Getter
-    Button userInfo = new Button(userInfoLocator, "The User Info button");
+    Button UserInfo = new Button(userInfoLocator, "The User Info button");
     @Getter
     Button ForgotPasswordLink = new Button(forgotPasswordLink, "The Forgot Password link");
     @Getter
@@ -138,6 +153,8 @@ public class LoginPage extends BaseElement {
 
     //Registration Step 2
     @Getter
+    TextField RegisterTabStep2 = new TextField(registerTabStep2, "The Register Tab Step 2");
+    @Getter
     InputField EmailAddress = new InputField(emailAddress, "The Email Address input field");
     @Getter
     InputField PhoneNumber = new InputField(phoneNumber, "The Phone Number input field");
@@ -153,6 +170,26 @@ public class LoginPage extends BaseElement {
     Button CurrencyEurBtn = new Button(currencyEurBtn, "The Currency Eur Button");
     @Getter
     Button SignupBtn = new Button(signupBtn, "The Signup Button");
+    @Getter
+    TextField Loader = new TextField(loader, "The Loader");
+
+    //Activation code
+    @Getter
+    TextField SuccessfulRegistrationModal = new TextField(successfulRegistrationModal, "The Successful Registration Modal");
+    @Getter
+    TextField SuccessfulRegistrationTitle = new TextField(successfulRegistrationTitle, "The Successful Registration Title");
+    @Getter
+    Button SuccessfulRegistrationModalCloseBtn = new Button(successfulRegistrationModalCloseBtn, "The Successful Registration Modal Close Button");
+    @Getter
+    InputField CodeInputCell0 = new InputField(codeInputCell0, "The Activation Code Input Cell 0");
+    @Getter
+    InputField CodeInputCell1 = new InputField(codeInputCell1, "The Activation Code Input Cell 1");
+    @Getter
+    InputField CodeInputCell2 = new InputField(codeInputCell2, "The Activation Code Input Cell 2");
+    @Getter
+    InputField CodeInputCell3 = new InputField(codeInputCell3, "The Activation Code Input Cell 3");
+    @Getter
+    Button ContinueActivationBtn = new Button(continueActivationBtn, "The Continue Code Activation Button");
 
     //Warnings
     @Getter
@@ -211,7 +248,7 @@ public class LoginPage extends BaseElement {
                         "accept",
                         10);
         if (accepted) {
-            System.out.println("Cookies accepted");
+            log.info("Cookies accepted");
         }
         return this;
     }
@@ -241,14 +278,12 @@ public class LoginPage extends BaseElement {
         return this;
     }
     @Step("Click on the 'Forgot password' link")
-        public LoginPage clickOnForgotPasswordLink(){
+        public void clickOnForgotPasswordLink(){
         getForgotPasswordLink().clickButton();
-        return this;
     }
     @Step("Click on the 'Forgot Password' title")
-    public LoginPage enterEmailIntoEmailInput(String email) {
+    public void enterEmailIntoEmailInput(String email) {
         getEmailInputForRestorePassword().setText(email);
-        return this;
     }
     @Step("Click on the 'ReCaptcha' button")
     public LoginPage clickOnReCaptchaButton() {
@@ -280,7 +315,7 @@ public class LoginPage extends BaseElement {
         waitUntilMaskDisappears();
         getNotificationAccept().clickButton();
         Assert.assertTrue(
-                getNotificationDialog().invisibilityOfElementLocated(5),
+                getNotificationAccept().invisibilityOfElementLocated(10),
                 "Notification dialog is still visible after clicking Accept"
         );
     }
@@ -364,6 +399,9 @@ public class LoginPage extends BaseElement {
     @Step("Enter the Password")
     public LoginPage setPassword(String password){
         getPasswordInput().setText(password);
+        // The registration form validates the last field on blur.
+        ((JavascriptExecutor) getDriver()).executeScript(
+                "arguments[0].blur();", getDriver().findElement(passwordInput));
         return this;
     }
     @Step("Click on the Hide Mode Password Button")
@@ -383,6 +421,61 @@ public class LoginPage extends BaseElement {
     }
     @Step("Click on the Signup Button")
     public void clickOnSignupButton() {
-        getSignupBtn().clickButton();
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(15));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(mask));
+        WebElement signupButton = wait.until(driver -> {
+            WebElement element = driver.findElement(signupBtn);
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            Boolean disabled = (Boolean) js.executeScript(
+                    "return arguments[0].disabled === true " +
+                            "|| arguments[0].getAttribute('aria-disabled') === 'true' " +
+                            "|| arguments[0].classList.contains('disabled');",
+                    element);
+            return element.isDisplayed() && element.isEnabled() && Boolean.FALSE.equals(disabled) ? element : null;
+        });
+        signupButton.click();
+    }
+    @Step("Wait until loader disappears")
+    public void waitUntilLoaderDisappears() {
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(30));
+        try {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(loader));
+        } catch (TimeoutException ignored) {
+        }
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(loader));
+    }
+    @Step("Wait until registration success modal is displayed")
+    public void waitUntilSuccessfulRegistrationDisplayed() {
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(30));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(successfulRegistrationTitle));
+    }
+    @Step("Click on 'X' button for Activation Modal")
+    public void clickCloseBtnSuccessfulRegistrationModal() {
+        getSuccessfulRegistrationModalCloseBtn().clickButton();
+    }
+    @Step("Enter 1 digit for activation code")
+    public LoginPage enterFirstDigitForActivationCode(String activationCode) {
+        getCodeInputCell0().setText(activationCode);
+        return this;
+    }
+    @Step("Enter 2 digit for activation code")
+    public LoginPage enterSecondDigitForActivationCode(String activationCode) {
+        getCodeInputCell1().setText(activationCode);
+        return this;
+    }
+    @Step("Enter 3 digit for activation code")
+    public LoginPage enterThirdDigitForActivationCode(String activationCode) {
+        getCodeInputCell2().setText(activationCode);
+        return this;
+    }
+    @Step("Enter 4 digit for activation code")
+    public LoginPage enterForthDigitForActivationCode(String activationCode) {
+        getCodeInputCell3().setText(activationCode);
+        return this;
+    }
+    @Step("Click on 'Continue' button for Successful Registration Modal")
+    public LoginPage clickContinueBtnActivationModal() {
+        getContinueActivationBtn().clickButton();
+        return this;
     }
 }

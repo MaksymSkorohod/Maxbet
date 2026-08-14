@@ -18,13 +18,12 @@ public class TestBase {
                 .waitUntilMaskDisappears();
      new LoginPage()
                 .clickOnLoginButton()
-                .enterUsername("James_Bond")
-                .enterPassword("Vfrcbv82")
+                .enterUsername("Chris_Hemsworth")
+                .enterPassword("Qwerty123")
                 .clickOnLogin()
                 .clickOnPage()
                 .clickOnAcceptNotification();
     }
-
 //    @AfterMethod
 //    public void close(){killDriver();}
 }

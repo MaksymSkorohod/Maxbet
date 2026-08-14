@@ -1,17 +1,18 @@
 package io.maxbet.tests;
 
+import io.maxbet.Units.CnpGenerator;
+import io.maxbet.Units.EmailGenerator;
+import io.maxbet.Units.PhoneNumberGenerator;
+import io.maxbet.Units.UsernameGenerator;
 import io.maxbet.pageObjects.LobbyPage;
 import io.maxbet.pageObjects.LoginPage;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import org.testng.asserts.SoftAssert;
-
-import java.util.Random;
 
 import static io.maxbet.DriverManager.getDriver;
 
 public class LogInTests extends TestBase {
-
+    LoginPage loginPage = new LoginPage();
     @Override
     public void logIn() {
         lobbyPage = new LobbyPage();
@@ -20,10 +21,10 @@ public class LogInTests extends TestBase {
     @Test(description = "Open the Login modal")
     public void openLoginModal() {
         getDriver().get("https://dev.maxbet.ro/en");
-        new LoginPage()
+       loginPage
                 .acceptCookiesIfPresent()
                 .waitUntilMaskDisappears();
-        new LoginPage()
+        loginPage
                 .clickOnLoginButton();
         Assert.assertTrue(
                 new LoginPage().getLogoOnLoginModal().isExists(15),
@@ -33,10 +34,10 @@ public class LogInTests extends TestBase {
     @Test(description = "Successful Login")
     public void loginSuccess() {
         getDriver().get("https://dev.maxbet.ro/en");
-        new LoginPage()
+      loginPage
                 .acceptCookiesIfPresent()
                 .waitUntilMaskDisappears();
-        new LoginPage()
+       loginPage
                 .clickOnLoginButton()
                 .enterUsername("James_Bond")
                 .enterPassword("Vfrcbv82")
@@ -51,13 +52,13 @@ public class LogInTests extends TestBase {
     @Test(description = "Open the Forgot password")
     public void openForgotPassword() {
         getDriver().get("https://dev.maxbet.ro/en");
-        new LoginPage()
+        loginPage
                 .acceptCookiesIfPresent()
                 .waitUntilMaskDisappears();
-        new LoginPage()
+       loginPage
                 .clickOnLoginButton()
                 .getLoginRegisterModal().verify();
-        new LoginPage()
+        loginPage
                 .clickOnForgotPasswordLink();
         Assert.assertTrue(
                 new LoginPage().getForgotPasswordTitle().isExists(10),
@@ -67,13 +68,13 @@ public class LogInTests extends TestBase {
     @Test(description = "Enter an email address on the Forgot password")
     public void enterEmailOnForgotPasswordModal() {
         getDriver().get("https://dev.maxbet.ro/en");
-        new LoginPage()
+       loginPage
                 .acceptCookiesIfPresent()
                 .waitUntilMaskDisappears();
-        new LoginPage()
+        loginPage
                 .clickOnLoginButton()
                 .getLoginRegisterModal().verify();
-        new LoginPage()
+        loginPage
                 .clickOnForgotPasswordLink();
         Assert.assertTrue(
                 new LoginPage().getForgotPasswordTitle().isExists(10),
@@ -85,10 +86,10 @@ public class LogInTests extends TestBase {
     @Test(description = "Open register modal")
     public void openRegisterModal(){
         getDriver().get("https://dev.maxbet.ro/en");
-        new LoginPage()
+        loginPage
                 .acceptCookiesIfPresent()
                 .waitUntilMaskDisappears();
-        new LoginPage()
+        loginPage
                 .clickOnRegisterButton();
         Assert.assertTrue(
                 new LoginPage().getRegisterTabLocator().isExists(15), "Register modal is not displayed"
@@ -97,16 +98,16 @@ public class LogInTests extends TestBase {
     @Test(description = "Complete Step 1 for Registration")
     public void completeStep1(){
         getDriver().get("https://dev.maxbet.ro/en");
-        new LoginPage()
+       loginPage
                 .acceptCookiesIfPresent()
                 .waitUntilMaskDisappears();
-        new LoginPage()
+        loginPage
                 .clickOnRegisterButton()
                 .getRegisterTabLocator().click();
-        new LoginPage()
+       loginPage
                 .enterFirstName("Test")
                 .enterLastName("User")
-                .enterCnpCode("1991117416834")
+                .enterCnpCode(CnpGenerator.generate())
                 .enterCityTown("Bucharest")
                 .clickOnCityTownOptions()
                 .enterAddress("Test street")
@@ -115,41 +116,50 @@ public class LogInTests extends TestBase {
                 .getRegisterTabLocator().verify();
     }
     @Test(description = "Complete Registration")
-    public void completeRegistration(){
-        int randomNumber = new Random().nextInt(100000);
+    public void completeRegistration() throws InterruptedException {
         getDriver().get("https://dev.maxbet.ro/en");
-        new LoginPage()
+        loginPage
                 .acceptCookiesIfPresent()
                 .waitUntilMaskDisappears();
-        new LoginPage()
+        loginPage
                 .clickOnRegisterButton()
                 .getRegisterTabLocator().click();
-        new LoginPage()
+        loginPage
                 .enterFirstName("Test")
                 .enterLastName("User")
-                .enterCnpCode("1991117416834")
+                .enterCnpCode(CnpGenerator.generate())
                 .enterCityTown("Bucharest")
                 .clickOnCityTownOptions()
                 .enterAddress("Test street")
                 .clickOnTermsAndConditionCheckbox()
                 .clickOnContinueButton()
-                .getRegisterTabLocator().verify();
-        new LoginPage()
-                .enterEmailAddress("testuseremail" + randomNumber + "@mail.com")
-                .enterPhoneNumber("0711000879")
-                .enterUserName("TestUser" + randomNumber)
+                .getRegisterTabStep2().verify();
+        loginPage
+                .enterEmailAddress(EmailGenerator.generate())
+                .enterPhoneNumber(PhoneNumberGenerator.generate())
+                .enterUserName(UsernameGenerator.generate())
                 .setPassword("Qwerty123");
+        Thread.sleep(1000);
+        loginPage
+                .clickOnSignupButton();
+        loginPage
+                .waitUntilSuccessfulRegistrationDisplayed();
+        loginPage
+                .getSuccessfulRegistrationTitle().verify();
+        loginPage
+                .clickOnPage()
+                .clickCloseBtnSuccessfulRegistrationModal();
     }
     @Test(description = "Verify Required Field Validation Message On Registration Step 1")
     public void verifyRequiredFieldValidationMessagesOnRegistrationStep1(){
         getDriver().get("https://dev.maxbet.ro/en");
-        new LoginPage()
+        loginPage
                 .acceptCookiesIfPresent()
                 .waitUntilMaskDisappears();
-        new LoginPage()
+        loginPage
                 .clickOnRegisterButton() .
                 getRegisterTabLocator().click();
-        new LoginPage()
+        loginPage
                 .clickOnContinueButton();
         Assert.assertTrue( new LoginPage().getFirstNameRequired().isExists(10),
                 "First Name validation message is not displayed" );
@@ -166,25 +176,24 @@ public class LogInTests extends TestBase {
     }
     @Test(description = "Verify Required Field Validation Message On Registration Step 2")
     public void verifyRequiredFieldValidationMessagesOnRegistrationStep2() {
-        int randomNumber = new Random().nextInt(100000);
         getDriver().get("https://dev.maxbet.ro/en");
-        new LoginPage()
+        loginPage
                 .acceptCookiesIfPresent()
                 .waitUntilMaskDisappears();
-        new LoginPage()
+        loginPage
                 .clickOnRegisterButton()
                 .getRegisterTabLocator().click();
-        new LoginPage()
+        loginPage
                 .enterFirstName("Test")
                 .enterLastName("User")
-                .enterCnpCode("1991117416834")
+                .enterCnpCode(CnpGenerator.generate())
                 .enterCityTown("Bucharest")
                 .clickOnCityTownOptions()
                 .enterAddress("Test street")
                 .clickOnTermsAndConditionCheckbox()
                 .clickOnContinueButton()
                 .getRegisterTabLocator().verify();
-        new LoginPage()
+        loginPage
                 .clickOnSignupButton();
         Assert.assertTrue( new LoginPage().getEmailRequired().isExists(10),
                 "Email validation message is not displayed" );
@@ -196,5 +205,4 @@ public class LogInTests extends TestBase {
                 "Password validation message is not displayed" );
     }
 }
-
 

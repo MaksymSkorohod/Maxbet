@@ -12,7 +12,7 @@ public class ProfilePage extends BaseElement {
     private final By mask = By.cssSelector(".mask");
     private final By accountInfoContainer = By.cssSelector(".account-info-container");
     private final By profileMenuContainer = By.cssSelector("div[class='menu'] mb-profile-menu div[class='menu-container']");
-    private final By depositBtnOnProfPage = By.cssSelector(".btn-secondary.link-item[iconposition='prefix'][iconpath='/assets/images/profile/user-account/deposit-icon-sm.svg']");
+    private final By depositBtnOnProfPage = By.cssSelector(".user-balance-container > div:nth-child(2) > a:first-child");
     private final By withdrawBtnOnProfPage = By.cssSelector(".btn-secondary.link-item.withdrawals");
     private final By myAccountBtn = By.cssSelector(".mb-menu-item.variant--compact[link='/profile']");
     private final By bonusesBtn = By.cssSelector("div[class='menu'] mb-menu-item:nth-child(2) a:nth-child(1)");
@@ -56,10 +56,16 @@ public class ProfilePage extends BaseElement {
     Button Logout = new Button(logoutBtn, "The 'Logout' button");
 
     @Step("Click on the Deposit button from the Profile page")
-    public DepositPageTests clickOnDepositBtnOnProfPage() {
+    public DepositPage clickOnDepositBtnOnProfPage() {//DepositPageTests
         AccountInfo.waitPageStability();
         getDepositBtnOnProfPage().clickButton();
-        return new DepositPageTests();
+        return new DepositPage();//DepositPageTests
+    }
+    @Step("Click on the Withdrawal button from the Profile page")
+    public WithdrawalsPage clickOnWithdrawalBtnOnProfilePage(){
+        AccountInfo.waitPageStability();
+        getWithdrawBtnOnProfPage().clickButton();
+        return new WithdrawalsPage();
     }
     @Step("Click on the 'My Account' button")
     public ProfilePage clickOnMyAccount() {

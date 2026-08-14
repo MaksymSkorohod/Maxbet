@@ -1,6 +1,7 @@
 package io.maxbet.Elements;
 import io.maxbet.DriverManager;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -143,12 +144,36 @@ public class BaseElement {
                 clickableElement
         );
     }
-
+    public void waitUntilUrlContains(String expectedPart) {
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(15));
+        wait.until(ExpectedConditions.urlContains(expectedPart));
+    }
     public void clickElement(By locator) {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(mask));
         WebElement element =
                 wait.until(ExpectedConditions.elementToBeClickable(locator));
         ((JavascriptExecutor) driver)
                 .executeScript("arguments[0].click();", element);
+    }
+    public void doubleClickButton() {
+        WebElement element = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
+                .until(ExpectedConditions.elementToBeClickable(getLocator()));
+
+        new Actions(getDriver())
+                .doubleClick(element)
+                .perform();
+    }
+    public void clickRegButton() {
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+
+        WebElement element = wait.until(
+                ExpectedConditions.elementToBeClickable(getLocator()));
+
+        // Даємо формі завершити валідацію
+        new Actions(getDriver())
+                .moveToElement(element)
+                .pause(Duration.ofMillis(500))
+                .click()
+                .perform();
     }
 }

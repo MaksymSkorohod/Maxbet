@@ -14,10 +14,25 @@ public class Button extends TextField {
         super(locator, description);
     }
 
+    /**
+     * Waits for the button to be clickable and clicks it. The element is looked up again on
+     * every poll, so a re-render between the lookup and the click is retried with a fresh
+     * reference instead of throwing StaleElementReferenceException. Angular replaces nodes
+     * while the page settles, which makes a reference held across two statements unsafe.
+     */
     public void clickButton(){
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-        WebElement element = wait.until(ExpectedConditions.elementToBeClickable(getLocator()));
-        element.click();
+        new WebDriverWait(getDriver(), Duration.ofSeconds(10))
+                .ignoring(StaleElementReferenceException.class)
+                .until(driver -> {
+                    WebElement element = ExpectedConditions
+                            .elementToBeClickable(getLocator())
+                            .apply(driver);
+                    if (element == null) {
+                        return false;
+                    }
+                    element.click();
+                    return true;
+                });
     }
     public void clickAnywhereOnPage() {
 

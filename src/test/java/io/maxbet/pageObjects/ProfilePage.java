@@ -3,7 +3,6 @@ package io.maxbet.pageObjects;
 import io.maxbet.Elements.BaseElement;
 import io.maxbet.Elements.Button;
 import io.maxbet.Elements.TextField;
-import io.maxbet.tests.DepositPageTests;
 import io.qameta.allure.Step;
 import lombok.Getter;
 import org.openqa.selenium.By;
@@ -11,7 +10,7 @@ import org.openqa.selenium.By;
 public class ProfilePage extends BaseElement {
     private final By mask = By.cssSelector(".mask");
     private final By accountInfoContainer = By.cssSelector(".account-info-container");
-    private final By profileMenuContainer = By.cssSelector("div[class='menu'] mb-profile-menu div[class='menu-container']");
+    private final By profileMenuContainer = By.cssSelector("mb-profile-menu .menu-container");
     private final By depositBtnOnProfPage = By.cssSelector(".user-balance-container > div:nth-child(2) > a:first-child");
     private final By withdrawBtnOnProfPage = By.cssSelector(".btn-secondary.link-item.withdrawals");
     private final By myAccountBtn = By.cssSelector(".mb-menu-item.variant--compact[link='/profile']");
@@ -79,10 +78,10 @@ public class ProfilePage extends BaseElement {
         return new BonusesPage();
     }
     @Step("Click on the 'Pending Withdrawals' button")
-    public PendingWdPage clickOnPendingWd() {
+    public void clickOnPendingWd() {
         AccountInfo.waitPageStability();
         getPendingWdBtn().clickButton();
-        return new PendingWdPage();
+        new PendingWdPage();
     }
     @Step("Click on the 'Transactions' button")
     public TransactionsPage clickOnTransactions() {

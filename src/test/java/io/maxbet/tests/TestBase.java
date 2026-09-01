@@ -8,22 +8,31 @@ import static io.maxbet.DriverManager.getDriver;
 import static io.maxbet.DriverManager.killDriver;
 
 public class TestBase {
+    protected static final String BASE_URL = "https://dev.maxbet.ro/en";
+    protected static final String USERNAME = "auto_user1";
+    protected static final String PASSWORD = "Qwerty123";
+
     protected LobbyPage lobbyPage;
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void logIn(){
-        getDriver().get("https://dev.maxbet.ro/en");
-     new LoginPage()
-                .acceptCookiesIfPresent()
-                .waitUntilMaskDisappears();
-     new LoginPage()
+        getDriver().get(BASE_URL);
+        LoginPage loginPage = new LoginPage();
+        loginPage.acceptCookiesIfPresent();
+        loginPage.waitUntilMaskDisappears();
+        if (loginPage.isUserLoggedIn()) {
+            return;
+        }
+        loginPage
                 .clickOnLoginButton()
-                .enterUsername("Chris_Hemsworth")
-                .enterPassword("Qwerty123")
+                .enterUsername(USERNAME)
+                .enterPassword(PASSWORD)
                 .clickOnLogin()
                 .clickOnPage()
                 .clickOnAcceptNotification();
+        Assert.assertTrue(new LoginPage().isUserLoggedIn(),
+                "Login with '" + USERNAME + "' did not sign the user in");
     }
-//    @AfterMethod
-//    public void close(){killDriver();}
+   @AfterMethod(alwaysRun = true)
+   public void close(){killDriver();}
 }

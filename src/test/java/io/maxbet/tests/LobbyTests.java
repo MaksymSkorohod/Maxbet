@@ -12,7 +12,6 @@ public class LobbyTests extends TestBase{
     public void setUp() {
         lobbyPage = new LobbyPage();
     }
-
     @Test(description = "Open Profile page")
     public void openProfilePage(){
         lobbyPage
@@ -61,11 +60,42 @@ public class LobbyTests extends TestBase{
         lobbyPage
                 .openLiveCasinoPage();
     }
-    @Test(description = "Open the 'Betting' page")
-    public void openBettingPageFromHeader(){
+    @Test(description = "Open the game from the Search modal")
+    public void openGameFromSearchModal(){
         lobbyPage
-                .getHeaderLiveCasinoBtn().verify();
+                .clickOnSearch()
+                .getSearchModalTitle().verify();
         lobbyPage
-                .openBettingPage();
+                .enterSearchText("40 Super Hot");
+        lobbyPage
+                .playSearchedGame()
+                .getGamePageTitle2().verify();
     }
+    @Test(description = "Close the game from the game page and return to the 'Lobby' page")
+    public void closeGame(){
+        lobbyPage
+                .clickOnSearch()
+                .getSearchModalTitle().verify();
+        lobbyPage
+                .enterSearchText("Mad Cars");
+        lobbyPage
+                .playSearchedGame()
+                .getGamePageTitle1().verify();
+        lobbyPage
+                .clickOnBackGameBtnAndVerifyLobbyPage();
+    }
+    @Test(description = "Open the 'Live Chat' modal and minimize it")
+    public void openAndMinimizeLiveChatModal(){
+        lobbyPage
+                .clickOnLiveChat()
+                .verifyLiveChatIsOpened()
+                .clickOnMinimizeButton()
+                .verifyLiveChatIsMinimized();
+        }
+        @Test(description = "Open the 'Providers' filter and verify the vendors container")
+        public void openProvidersFilterAndVerifyVendorsContainer(){
+            lobbyPage
+                    .clickOnProviderFilter()
+                    .getVendorsContainer().verify();
+        }
 }

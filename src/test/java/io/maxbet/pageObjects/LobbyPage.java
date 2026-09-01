@@ -5,15 +5,25 @@ import io.maxbet.Elements.Button;
 import io.maxbet.Elements.InputField;
 import io.maxbet.Elements.TextField;
 import io.qameta.allure.Step;
+import lombok.Generated;
 import lombok.Getter;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementNotInteractableException;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
+import org.testng.Assert;
 import java.time.Duration;
+import java.util.List;
 import static io.maxbet.DriverManager.getDriver;
 
 public class LobbyPage extends BaseElement {
+    private static final String LOBBY_URL = "/casino-online/populargames_prod";
     private final By mask = By.cssSelector(".mask");
     private final By userInfoLocator = By.cssSelector(
             "div[class='right-block notific-padding'] mb-header-user-info[class='user-info']"
@@ -38,6 +48,15 @@ public class LobbyPage extends BaseElement {
     private final By searchModal = By.cssSelector(".mat-mdc-dialog-component-host.ng-star-inserted");
     private final By searchModalTitle = By.cssSelector("section[class='search-action'] div[class='title']");
     private final By searchForGameInput = By.cssSelector("input[placeholder='Search for games']");
+    private final By searchedGame = By.cssSelector("mb-game-card[mbfullstorytrackedelement='Casino.Search.CRD_GameResult'] button.favorite-btn");
+    private final By searchedGameCard = By.cssSelector("mb-games-search-dialog mb-game-card");
+    private final By gameCardImage = By.cssSelector(":scope > a");
+    private final By gameCardPlayBtn = By.cssSelector(":scope > div > div > button");
+    private final By gamePageTitle1 = By.xpath("//h1[normalize-space()='Mad Cars Online']");
+    private final By gamePageTitle2 = By.xpath("//h1[normalize-space()='40 Super Hot Online']");
+    private final By backGameBtn = By.cssSelector("div[aria-label='nav-back.back-btn']");
+    private final By providerFilter = By.cssSelector("mb-providers-filter > div");
+    private final By vendorsContainer = By.cssSelector(".vendors-container");
     private final By lobbyMenu = By.cssSelector(".menu-items-groups");
     private final By popularGamesBtn = By.cssSelector(".mb-menu-item.variant--compact[link='/casino/populargames']");
     private final By allGamesBtn = By.cssSelector(".mb-menu-item.variant--compact[link='/casino/allgames']");
@@ -46,6 +65,12 @@ public class LobbyPage extends BaseElement {
     private final By promotionsBtn = By.cssSelector(".mb-menu-item[label='menu.promotions']");
     private final By maxWheelBtn = By.cssSelector(".mb-menu-item.variant--compact[link='/maxwheel']");
     private final By vipBtn = By.cssSelector(".mb-menu-item.variant--compact[link='/vip']");
+    private final By liveChatBtn = By.cssSelector("mb-menu-item[label='menu.liveSupport']");
+    private final By liveChatModal = By.cssSelector("#chat-widget-container");
+    private final By liveChatFrame = By.cssSelector("iframe#chat-widget");
+    private final By minimizedLiveChatFrame = By.cssSelector("iframe#chat-widget-minimized");
+    private final By minimizeButton = By.id("minimize");
+
 
     @Getter
     private final Button UserInfo = new Button(userInfoLocator, "The User Info button");
@@ -76,6 +101,18 @@ public class LobbyPage extends BaseElement {
     @Getter
     InputField SearchForGame = new InputField(searchForGameInput, "The Search for game input field");
     @Getter
+    Button SearchedGame = new Button(searchedGame, "The searched game in the Search modal");
+    @Getter
+    TextField GamePageTitle1 = new TextField(gamePageTitle1, "The game page title");
+    @Getter
+    TextField GamePageTitle2 = new TextField(gamePageTitle2, "The game page title");
+    @Getter
+    Button BackGameBtn = new Button(backGameBtn, "The 'Back' button on the game page");
+    @Getter
+    Button ProviderFilter = new Button(providerFilter, "The 'Provider' filter");
+    @Getter
+    TextField VendorsContainer = new TextField(vendorsContainer, "The 'Vendors' container");
+    @Getter
     Button LobbyMenu = new Button(lobbyMenu, "The Lobby Menu");
     @Getter
     Button PopularGamesBtn = new Button(popularGamesBtn, "The 'For you' button");
@@ -91,6 +128,8 @@ public class LobbyPage extends BaseElement {
     Button MaxWheelBtn = new Button(maxWheelBtn, "The 'Max Wheel' button");
     @Getter
     Button VipBtn = new Button(vipBtn, "The 'VIP' button");
+    @Getter
+    Button LiveChatBtn = new Button(liveChatBtn, "The 'Live Chat' button");
 
 
     @Step("Click on the 'User Info' button")
@@ -154,6 +193,51 @@ public class LobbyPage extends BaseElement {
     public void enterSearchText(String text) {
         getSearchForGame().setText(text);
     }
+    @Step("Click on the game from the Search modal")
+    public void clickOnSearchedGame() {
+        getDriver().findElements(searchedGame).get(0).click();
+    }
+    @Step("Hover over the searched game and click the 'Play' button")
+    public LobbyPage playSearchedGame() {
+        playSearchedGame(0);
+        return this;
+    }
+    @Step("Hover over the searched game #{index} and click the 'Play' button")
+    public LobbyPage playSearchedGame(int index) {
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+
+        WebElement card = wait.until(driver -> {
+            List<WebElement> cards = driver.findElements(searchedGameCard);
+            return cards.size() > index && cards.get(index).isDisplayed() ? cards.get(index) : null;
+        });
+
+        new Actions(getDriver())
+                .moveToElement(card.findElement(gameCardImage))
+                .pause(Duration.ofMillis(300))
+                .perform();
+
+        WebElement playBtn = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
+                .ignoring(NoSuchElementException.class, StaleElementReferenceException.class)
+                .until(driver -> {
+                    WebElement button = card.findElement(gameCardPlayBtn);
+                    return button.isDisplayed() && button.isEnabled() ? button : null;
+                });
+        playBtn.click();
+        return this;
+    }
+    @Step("Click on the 'Back' button on the game page")
+    public void clickOnBackGameBtnAndVerifyLobbyPage() {
+        wait.until(ExpectedConditions.elementToBeClickable(backGameBtn)).click();
+    wait.until(ExpectedConditions.urlContains(LOBBY_URL));
+    Assert.assertTrue(
+            getDriver().getCurrentUrl().contains(LOBBY_URL),
+            "Lobby Page URL is incorrect. Actual URL: " + getDriver().getCurrentUrl());
+    }
+    @Step("Click on the 'Providers' filter")
+    public LobbyPage clickOnProviderFilter() {
+        getProviderFilter().clickButton();
+        return this;
+    }
     @Step("Click on the 'For you' button")
     public LobbyPage clickOnPopularGames() {
         getPopularGamesBtn().clickButton();
@@ -185,5 +269,61 @@ public class LobbyPage extends BaseElement {
         getVipBtn().clickButton();
         return new VipPage();
     }
-
+    @Step("Click on the 'Live Chat' button")
+    public LobbyPage clickOnLiveChat() {
+        waitUntilMaskDisappears();
+        wait.until(ExpectedConditions.elementToBeClickable(liveChatBtn)).click();
+        chatWait().until(ExpectedConditions.visibilityOfElementLocated(liveChatFrame));
+        return this;
+    }
+    @Step("Verify that the 'Live Chat' modal is opened")
+    public LobbyPage verifyLiveChatIsOpened() {
+        Assert.assertTrue(
+                isVisible(liveChatModal),
+                "The 'Live Chat' modal is not visible. Locator: " + liveChatModal);
+        Assert.assertTrue(
+                isVisible(liveChatFrame),
+                "The 'Live Chat' widget frame is not visible. Locator: " + liveChatFrame);
+        return this;
+    }
+    @Step("Click on the 'Minimize' button in the Live Chat modal")
+    public LobbyPage clickOnMinimizeButton() {
+        chatWait().until(driver -> {
+            driver.switchTo().defaultContent();
+            try {
+                driver.switchTo().frame(driver.findElement(liveChatFrame));
+                WebElement button = driver.findElement(minimizeButton);
+                if (!button.isDisplayed() || !button.isEnabled()) {
+                    return false;
+                }
+                button.click();
+                return true;
+            } catch (NoSuchFrameException | NoSuchElementException
+                     | StaleElementReferenceException | ElementNotInteractableException e) {
+                return false;
+            }
+        });
+        getDriver().switchTo().defaultContent();
+        return this;
+    }
+    @Step("Verify that the 'Live Chat' modal is minimized")
+    public LobbyPage verifyLiveChatIsMinimized() {
+        Assert.assertTrue(
+                chatWait().until(ExpectedConditions.invisibilityOfElementLocated(liveChatFrame)),
+                "The 'Live Chat' modal is still visible after clicking the 'Minimize' button");
+        Assert.assertFalse(
+                getDriver().findElements(minimizedLiveChatFrame).isEmpty(),
+                "The minimized 'Live Chat' widget is not present on the page");
+        return this;
+    }
+    private boolean isVisible(By locator) {
+        try {
+            return chatWait().until(ExpectedConditions.visibilityOfElementLocated(locator)) != null;
+        } catch (TimeoutException e) {
+            return false;
+        }
+    }
+    private WebDriverWait chatWait() {
+        return new WebDriverWait(getDriver(), Duration.ofSeconds(30));
+    }
 }

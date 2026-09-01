@@ -215,9 +215,6 @@ public class DepositPage extends BaseElement {
 
     @Step("Check the payment method page '{expectedUrlPath}' is opened")
     public boolean isPmPageOpened(String expectedUrlPath) {
-        // Routing is async, so the URL has to be waited for rather than read once.
-        // Matched on a path boundary, not "contains": "/aircash" must not accept
-        // "/aircash-market", otherwise the wrong page would still pass.
         if (!waitForUrlPathEndingWith(expectedUrlPath)) {
             return false;
         }
@@ -233,14 +230,6 @@ public class DepositPage extends BaseElement {
         );
         return this;
     }
-
-    /**
-     * Clicks the 'Back' link, which returns from a payment method to the list of payment
-     * methods. Returns false instead of throwing so that a caller checking every payment
-     * method in one test can report this method and carry on with the rest. Falls back to
-     * browser history because a failure to go back would otherwise strand every remaining
-     * payment method on the wrong page.
-     */
     @Step("Return to the payment methods list with the 'Back' button")
     public boolean returnToPaymentMethodsList() {
         try {

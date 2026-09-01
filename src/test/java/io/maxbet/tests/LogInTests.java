@@ -49,6 +49,46 @@ public class LogInTests extends TestBase {
                 "User info is not visible after successful login"
         );
     }
+    @Test(description = "Login with a non-existing username")
+    public void loginWithIncorrectUsername() {
+        getDriver().get("https://dev.maxbet.ro/en");
+        loginPage
+                .acceptCookiesIfPresent()
+                .waitUntilMaskDisappears();
+        loginPage
+                .clickOnLoginButton()
+                .enterUsername(UsernameGenerator.generate())
+                .enterPassword("Vfrcbv82")
+                .clickOnLogin();
+        Assert.assertTrue(
+                new LoginPage().getWrongUsernameModal().isExists(15),
+                "The 'Wrong Username' warning modal is not displayed for a non-existing username"
+        );
+        Assert.assertFalse(
+                new LoginPage().getUserInfo().isExists(3),
+                "The user was signed in with a non-existing username"
+        );
+    }
+    @Test(description = "Login with an incorrect password")
+    public void loginWithIncorrectPassword() {
+        getDriver().get("https://dev.maxbet.ro/en");
+        loginPage
+                .acceptCookiesIfPresent()
+                .waitUntilMaskDisappears();
+        loginPage
+                .clickOnLoginButton()
+                .enterUsername("James_Bond")
+                .enterPassword("WrongPassword123")
+                .clickOnLogin();
+        Assert.assertTrue(
+                new LoginPage().getWrongPasswordWarning().isExists(15),
+                "The 'Wrong Password' warning is not displayed for an incorrect password"
+        );
+        Assert.assertFalse(
+                new LoginPage().getUserInfo().isExists(3),
+                "The user was signed in with an incorrect password"
+        );
+    }
     @Test(description = "Open the Forgot password")
     public void openForgotPassword() {
         getDriver().get("https://dev.maxbet.ro/en");

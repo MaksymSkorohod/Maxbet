@@ -1,9 +1,12 @@
 package io.maxbet.tests;
 
+import io.maxbet.Elements.Button;
 import io.maxbet.pageObjects.LobbyPage;
 import io.maxbet.pageObjects.TournamentsPage;
 import io.maxbet.pageObjects.VipPage;
+import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 public class LobbyTests extends TestBase{
@@ -77,10 +80,10 @@ public class LobbyTests extends TestBase{
                 .clickOnSearch()
                 .getSearchModalTitle().verify();
         lobbyPage
-                .enterSearchText("Mad Cars");
+                .enterSearchText("40 Super Hot");
         lobbyPage
                 .playSearchedGame()
-                .getGamePageTitle1().verify();
+                .getGamePageTitle2().verify();
         lobbyPage
                 .clickOnBackGameBtnAndVerifyLobbyPage();
     }
@@ -98,4 +101,92 @@ public class LobbyTests extends TestBase{
                     .clickOnProviderFilter()
                     .getVendorsContainer().verify();
         }
+
+    /**
+     * The categories bar carries thirty six sections and the page object names the first twelve, so
+     * the provider walks those twelve. Only the position is named here: the label of a section and
+     * the address it opens are content of the CMS, they are renamed there without touching the
+     * markup, and each test reads the address it expects off the link of the section itself.
+     */
+    @DataProvider(name = "barSections")
+    public Object[][] barSections() {
+        return new Object[][]{
+                {"Bar Section 1", (SectionOf) LobbyPage::getBarSection1},
+                {"Bar Section 2", (SectionOf) LobbyPage::getBarSection2},
+                {"Bar Section 3", (SectionOf) LobbyPage::getBarSection3},
+                {"Bar Section 4", (SectionOf) LobbyPage::getBarSection4},
+                {"Bar Section 5", (SectionOf) LobbyPage::getBarSection5},
+                {"Bar Section 6", (SectionOf) LobbyPage::getBarSection6},
+                {"Bar Section 7", (SectionOf) LobbyPage::getBarSection7},
+                {"Bar Section 8", (SectionOf) LobbyPage::getBarSection8},
+                {"Bar Section 9", (SectionOf) LobbyPage::getBarSection9},
+                {"Bar Section 10", (SectionOf) LobbyPage::getBarSection10},
+                {"Bar Section 11", (SectionOf) LobbyPage::getBarSection11},
+                {"Bar Section 12", (SectionOf) LobbyPage::getBarSection12},
+        };
+    }
+
+    @Test(description = "The categories bar carries its sections on the scrollable strip")
+    public void theCategoriesBarCarriesItsSections(){
+        lobbyPage
+                .getSectionDragScrollBar().verify();
+        for (Object[] section : barSections()) {
+            ((SectionOf) section[1]).of(lobbyPage).verify();
+        }
+    }
+
+    @Test(dataProvider = "barSections",
+            description = "A section of the categories bar opens the URL it links to")
+    public void openingABarSectionOpensItsUrl(String name, SectionOf sectionOf){
+        Button section = sectionOf.of(lobbyPage);
+        section.verify();
+        String path = lobbyPage.getBarSectionPath(section);
+        Assert.assertTrue(path.startsWith("/"),
+                "The '" + name + "' section of the categories bar links nowhere: '" + path + "'");
+
+        lobbyPage
+                .openBarSection(section);
+
+        Assert.assertTrue(lobbyPage.waitUntilSectionIsOpened(path),
+                "The '" + name + "' section did not open '" + path + "', the page stayed on '"
+                        + lobbyPage.getCurrentUrl() + "'");
+        assertUrlOpensSection(path, name);
+    }
+    @Test(description = "The first section of the categories bar opens again after another one")
+    public void theFirstBarSectionOpensAgainAfterAnotherOne(){
+        Button firstSection = lobbyPage.getBarSection1();
+        Button secondSection = lobbyPage.getBarSection2();
+        String firstPath = lobbyPage.getBarSectionPath(firstSection);
+        String secondPath = lobbyPage.getBarSectionPath(secondSection);
+        Assert.assertNotEquals(secondPath, firstPath,
+                "The first two sections of the categories bar link to the same address");
+
+        lobbyPage
+                .openBarSection(secondSection);
+        Assert.assertTrue(lobbyPage.waitUntilSectionIsOpened(secondPath),
+                "The 'Bar Section 2' did not open '" + secondPath + "', the page stayed on '"
+                        + lobbyPage.getCurrentUrl() + "'");
+
+        lobbyPage
+                .openBarSection(firstSection);
+
+        Assert.assertTrue(lobbyPage.waitUntilSectionIsOpened(firstPath),
+                "The 'Bar Section 1' did not open '" + firstPath + "' again, the page stayed on '"
+                        + lobbyPage.getCurrentUrl() + "'");
+        assertUrlOpensSection(firstPath, "Bar Section 1");
+    }
+
+    private void assertUrlOpensSection(String path, String name){
+        String url = lobbyPage.getCurrentUrl().split("[?#]")[0];
+        if (url.endsWith("/")) {
+            url = url.substring(0, url.length() - 1);
+        }
+        Assert.assertTrue(url.endsWith(path),
+                "The URL of the opened '" + name + "' section is '" + url
+                        + "', it does not end with the address of the section, '" + path + "'");
+    }
+
+    private interface SectionOf {
+        Button of(LobbyPage page);
+    }
 }

@@ -27,6 +27,8 @@ public class LoginPage extends BaseElement {
     private final By userNameField = By.id("usernameOrEmail");
     private final By passwordField = By.id("password");
     private final By connectionBtn = By.cssSelector("#auth-modal .btn-primary.lg");
+    private final By wrongUsernameModal = By.cssSelector(".default-dialog.warning");
+    private final By wrongPasswordWarning = By.cssSelector("#auth-modal mb-sign-in form > div > div");
     private final By mask = By.cssSelector(".mask");
     private final By notificationDialog = By.cssSelector(".mat-mdc-dialog-surface.mdc-dialog__surface");
     private final By notificationAccept = By.cssSelector("button[class='mb-button btn btn-primary lg ng-star-inserted']");
@@ -106,6 +108,10 @@ public class LoginPage extends BaseElement {
     InputField PasswordField = new InputField(passwordField,"The Password input field");
     @Getter
     Button ConnectionButton =  new Button(connectionBtn,"The 'Login button'");
+    @Getter
+    TextField WrongUsernameModal = new TextField(wrongUsernameModal,"The 'Wrong Username' modal");
+    @Getter
+    TextField WrongPasswordWarning = new TextField(wrongPasswordWarning,"The 'Wrong Password' warning");
     @Getter
     Button NotificationDialog = new Button(notificationDialog,"The Notification Dialog");
     @Getter
@@ -251,6 +257,12 @@ public class LoginPage extends BaseElement {
             log.info("Cookies accepted");
         }
         return this;
+    }
+    @Step("Check whether the user is already logged in")
+    public boolean isUserLoggedIn() {
+        // Short timeout on purpose: this is asked once per test on a page that has already
+        // settled, and the answer is "no" on every fresh browser.
+        return getUserInfo().isExists(3);
     }
     @Step("Click on the 'Login' button from the Lobby page")
     public LoginPage clickOnLoginButton() {

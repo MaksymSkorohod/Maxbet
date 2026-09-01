@@ -19,20 +19,36 @@ public class Button extends TextField {
      * every poll, so a re-render between the lookup and the click is retried with a fresh
      * reference instead of throwing StaleElementReferenceException. Angular replaces nodes
      * while the page settles, which makes a reference held across two statements unsafe.
+     * An overlay that covers the button - a toast, a dialog on its way out - is retried for the
+     * same window and only then clicked through JavaScript, the way {@link #click()} does.
      */
     public void clickButton(){
-        new WebDriverWait(getDriver(), Duration.ofSeconds(10))
-                .ignoring(StaleElementReferenceException.class)
-                .until(driver -> {
-                    WebElement element = ExpectedConditions
-                            .elementToBeClickable(getLocator())
-                            .apply(driver);
-                    if (element == null) {
-                        return false;
-                    }
-                    element.click();
-                    return true;
-                });
+        try {
+            new WebDriverWait(getDriver(), Duration.ofSeconds(10))
+                    .ignoring(StaleElementReferenceException.class)
+                    .ignoring(ElementClickInterceptedException.class)
+                    .until(driver -> {
+                        WebElement element = ExpectedConditions
+                                .elementToBeClickable(getLocator())
+                                .apply(driver);
+                        if (element == null) {
+                            return false;
+                        }
+                        element.click();
+                        return true;
+                    });
+        } catch (TimeoutException e) {
+            clickWithJs(e);
+        }
+    }
+    private void clickWithJs(TimeoutException cause) {
+        WebElement element;
+        try {
+            element = getDriver().findElement(getLocator());
+        } catch (NoSuchElementException | StaleElementReferenceException e) {
+            throw cause;
+        }
+        ((JavascriptExecutor) getDriver()).executeScript("arguments[0].click();", element);
     }
     public void clickAnywhereOnPage() {
 

@@ -57,6 +57,15 @@ public class BaseElement {
             }
         }
     }
+    /**
+     * Reads an attribute the way it is written in the markup. A link of the categories bar carries
+     * the address it opens in its own 'href', so a test can take the expected URL off the page
+     * instead of hard coding a slug that lives in the CMS.
+     */
+    public String getAttributeValue(String attribute){
+        String value = get().getDomAttribute(attribute);
+        return value == null ? "" : value;
+    }
     public boolean isExists(long...timeout){
         long currentTimeout = timeout.length > 0 ? timeout[0] : 10;
 

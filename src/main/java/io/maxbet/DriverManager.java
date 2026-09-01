@@ -53,7 +53,6 @@ public class DriverManager {
 //    options.addArguments("--window-size=1920,1080");
 //    options.addArguments("--disable-dev-shm-usage");
 //    options.addArguments("--no-sandbox");
-//
 //    WebDriverManager.chromedriver().setup();
 //    threadDriver.set(new ChromeDriver(options));
 //    }

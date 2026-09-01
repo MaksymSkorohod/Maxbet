@@ -57,6 +57,20 @@ public class LobbyPage extends BaseElement {
     private final By backGameBtn = By.cssSelector("div[aria-label='nav-back.back-btn']");
     private final By providerFilter = By.cssSelector("mb-providers-filter > div");
     private final By vendorsContainer = By.cssSelector(".vendors-container");
+    private final By sectionDragScrollBar = By.cssSelector(" .mb-nav-list__container.hidden-scroll");
+    private final By barSection1 = By.cssSelector("section.categories-bar mb-nav-list-item:nth-child(1) a");
+    private final By barSection2 = By.cssSelector("section.categories-bar mb-nav-list-item:nth-child(2) a");
+    private final By barSection3 = By.cssSelector("section.categories-bar mb-nav-list-item:nth-child(3) a");
+    private final By barSection4 = By.cssSelector("section.categories-bar mb-nav-list-item:nth-child(4) a");
+    private final By barSection5 = By.cssSelector("section.categories-bar mb-nav-list-item:nth-child(5) a");
+    private final By barSection6 = By.cssSelector("section.categories-bar mb-nav-list-item:nth-child(6) a");
+    private final By barSection7 = By.cssSelector("section.categories-bar mb-nav-list-item:nth-child(7) a");
+    private final By barSection8 = By.cssSelector("section.categories-bar mb-nav-list-item:nth-child(8) a");
+    private final By barSection9 = By.cssSelector("section.categories-bar mb-nav-list-item:nth-child(9) a");
+    private final By barSection10 = By.cssSelector("section.categories-bar mb-nav-list-item:nth-child(10) a");
+    private final By barSection11 = By.cssSelector("section.categories-bar mb-nav-list-item:nth-child(11) a");
+    private final By barSection12 = By.cssSelector("section.categories-bar mb-nav-list-item:nth-child(12) a");
+
     private final By lobbyMenu = By.cssSelector(".menu-items-groups");
     private final By popularGamesBtn = By.cssSelector(".mb-menu-item.variant--compact[link='/casino/populargames']");
     private final By allGamesBtn = By.cssSelector(".mb-menu-item.variant--compact[link='/casino/allgames']");
@@ -113,6 +127,33 @@ public class LobbyPage extends BaseElement {
     @Getter
     TextField VendorsContainer = new TextField(vendorsContainer, "The 'Vendors' container");
     @Getter
+    TextField SectionDragScrollBar = new TextField(sectionDragScrollBar, "The section drag scroll bar");
+    @Getter
+    Button BarSection1 = new Button(barSection1, "The section 1 in the categories bar");
+    @Getter
+    Button BarSection2 = new Button(barSection2, "The section 2 in the categories bar");
+    @Getter
+    Button BarSection3 = new Button(barSection3, "The section 3 in the categories bar");
+    @Getter
+    Button BarSection4 = new Button(barSection4, "The section 4 in the categories bar");
+    @Getter
+    Button BarSection5 = new Button(barSection5, "The section 5 in the categories bar");
+    @Getter
+    Button BarSection6 = new Button(barSection6, "The section 6 in the categories bar");
+    @Getter
+    Button BarSection7 = new Button(barSection7, "The section 7 in the categories bar");
+    @Getter
+    Button BarSection8 = new Button(barSection8, "The section 8 in the categories bar");
+    @Getter
+    Button BarSection9 = new Button(barSection9, "The section 9 in the categories bar");
+    @Getter
+    Button BarSection10 = new Button(barSection10, "The section 10 in the categories bar");
+    @Getter
+    Button BarSection11 = new Button(barSection11, "The section 11 in the categories bar");
+    @Getter
+    Button BarSection12 = new Button(barSection12, "The section 12 in the categories bar");
+
+    @Getter
     Button LobbyMenu = new Button(lobbyMenu, "The Lobby Menu");
     @Getter
     Button PopularGamesBtn = new Button(popularGamesBtn, "The 'For you' button");
@@ -149,12 +190,6 @@ public class LobbyPage extends BaseElement {
         waitUntilMaskDisappears();
         getHeaderLiveCasinoBtn().clickButton();
         return new LiveCasinoPage();
-    }
-    @Step("Open the 'Lotto' page")
-    public LottoPage openLottoPage() {
-        waitUntilMaskDisappears();
-        getHeaderLottoBtn().clickButton();
-        return new LottoPage();
     }
     @Step("Open the 'Betting' page")
     public BettingPage openBettingPage() {
@@ -237,6 +272,91 @@ public class LobbyPage extends BaseElement {
     public LobbyPage clickOnProviderFilter() {
         getProviderFilter().clickButton();
         return this;
+    }
+    @Step("Click on the 'Bar Section 1'")
+    public LobbyPage clickOnBarSection1() {
+        getBarSection1().clickButton();
+        return this;
+    }
+    @Step("Click on the 'Bar Section 2'")
+    public LobbyPage clickOnBarSection2() {
+        getBarSection2().clickButton();
+        return this;
+    }
+    @Step("Click on the 'Bar Section 3'")
+    public LobbyPage clickOnBarSection3() {
+        getBarSection3().clickButton();
+        return this;
+    }
+    @Step("Click on the 'Bar Section 4'")
+    public LobbyPage clickOnBarSection4() {
+        getBarSection4().clickButton();
+        return this;
+    }
+    @Step("Click on the 'Bar Section 5'")
+    public LobbyPage clickOnBarSection5() {
+        getBarSection5().clickButton();
+        return this;
+    }
+    @Step("Click on the 'Bar Section 6'")
+    public LobbyPage clickOnBarSection6() {
+        getBarSection6().clickButton();
+        return this;
+    }
+    @Step("Click on the 'Bar Section 7'")
+    public LobbyPage clickOnBarSection7() {
+        getBarSection7().clickButton();
+        return this;
+    }
+    @Step("Click on the 'Bar Section 8'")
+    public LobbyPage clickOnBarSection8() {
+        getBarSection8().clickButton();
+        return this;
+    }
+    @Step("Click on the 'Bar Section 9'")
+    public LobbyPage clickOnBarSection9() {
+        getBarSection9().clickButton();
+        return this;
+    }
+    @Step("Click on the 'Bar Section 10'")
+    public LobbyPage clickOnBarSection10() {
+        getBarSection10().clickButton();
+        return this;
+    }
+    @Step("Click on the 'Bar Section 11'")
+    public LobbyPage clickOnBarSection11() {
+        getBarSection11().clickButton();
+        return this;
+    }
+    @Step("Click on the 'Bar Section 12'")
+    public LobbyPage clickOnBarSection12() {
+        getBarSection12().clickButton();
+        return this;
+    }
+    /**
+     * The address a section of the categories bar opens, '/en/casino-online/velitech' and the like,
+     * read off the link itself. The sections are categories of the CMS, they are renamed and
+     * reordered there, so the expected URL belongs on the page rather than in a test.
+     */
+    @Step("Read the address the section of the categories bar links to")
+    public String getBarSectionPath(Button barSection) {
+        return barSection.getAttributeValue("href");
+    }
+    @Step("Open the section of the categories bar")
+    public LobbyPage openBarSection(Button barSection) {
+        waitUntilMaskDisappears();
+        barSection.clickButton();
+        return this;
+    }
+    @Step("Wait until the opened section is the one at '{path}'")
+    public boolean waitUntilSectionIsOpened(String path) {
+        try {
+            new WebDriverWait(getDriver(), Duration.ofSeconds(15))
+                    .until(ExpectedConditions.urlContains(path));
+            return true;
+        } catch (TimeoutException e) {
+            return false;
+        }
     }
     @Step("Click on the 'For you' button")
     public LobbyPage clickOnPopularGames() {

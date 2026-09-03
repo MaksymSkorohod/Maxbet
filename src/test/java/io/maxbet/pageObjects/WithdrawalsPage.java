@@ -21,15 +21,12 @@ public class WithdrawalsPage extends BaseElement {
     private final By withdrawalPageTitle = By.xpath("//h2[normalize-space()='Payment methods']");
     private final By withdrawalMethod1 = By.cssSelector("div[class='main-content-wrapper'] li:nth-child(1)");
     private final By withdrawalMethod2 = By.cssSelector("div[class='main-content-wrapper'] li:nth-child(2)");
-    private final By withdrawalMethod3 = By.xpath("//div[normalize-space()='Visa & MasterCard & Maestro EN']");//div[class='main-content-wrapper'] li:nth-child(3)
+    private final By withdrawalMethod3 = By.xpath("//div[normalize-space()='Visa & MasterCard & Maestro EN']");
     private final By withdrawalMethod4 = By.cssSelector("div[class='main-content-wrapper'] li:nth-child(4)");
     private final By inputForWdAmountBankCard = By.cssSelector("#amount");
     private final By amountWarningWdBankCardMessage = By.cssSelector("mb-formcontrol-error .error span");
     private final By firstBankCardSwitch = By.cssSelector("mb-withdraw-card:first-child .card");
     private final By firstBankCardCheckbox = By.cssSelector("mb-withdraw-card:first-child mb-switch input");
-    // 'ng-star-inserted' is an Angular bookkeeping class, not part of the component's styling:
-    // it is dropped from the button once the form turns valid, which is exactly the moment the
-    // button has to be found. Matched on the component's own classes instead.
     private final By continueWdBtn = By.cssSelector("button.mb-button.form-btn.btn-primary.lg");
     private final By successWdModal = By.cssSelector(".default-dialog.success");
     private final By successWdModalToTheLobbyBtn = By.cssSelector("button.mb-button.btn.btn-primary.lg");

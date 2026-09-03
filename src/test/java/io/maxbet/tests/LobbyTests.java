@@ -1,6 +1,7 @@
 package io.maxbet.tests;
 
 import io.maxbet.Elements.Button;
+import io.maxbet.pageObjects.GamePage;
 import io.maxbet.pageObjects.LobbyPage;
 import io.maxbet.pageObjects.TournamentsPage;
 import io.maxbet.pageObjects.VipPage;
@@ -10,6 +11,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 public class LobbyTests extends TestBase{
+    private static final String GAME_NAME = "40 Super Hot";
 
     @BeforeMethod
     public void setUp() {
@@ -31,6 +33,23 @@ public class LobbyTests extends TestBase{
         lobbyPage
                 .clickToCloseSearchModal();
     }
+    @Test(description = "Open the game from the Search modal")
+    public void openGameFromSearchModal() {
+        openGame()
+                .verifyPageTitle();
+    }
+    @Test(description = "Open the game from the Search modal and play a round of it")
+    public void playGameFromSearchModal() {
+        openGame()
+                .verifyPageTitle()
+                .playRound();
+    }
+    @Test(description = "Close the game from the game page and return to the 'Lobby' page")
+    public void closeGame() {
+        openGame()
+                .verifyPageTitle()
+                .clickOnBackGameBtnAndVerifyLobbyPage();
+    }
     @Test(description = "Open the 'Promotions' page")
     public void openPromotionsPage(){
         lobbyPage
@@ -47,6 +66,7 @@ public class LobbyTests extends TestBase{
         VipPage vipPage = lobbyPage.clickOnVip();
                 vipPage.getVipPageTitle().verify();
     }
+
     @Test(description = "Open the 'Deposit' modal from the 'Lobby' page")
     public void openDepositModal(){
         lobbyPage
@@ -56,6 +76,7 @@ public class LobbyTests extends TestBase{
         lobbyPage
                 .clickOnCloseDepositModal();
     }
+
     @Test(description = "Open the 'Live Casino' page")
     public void openLiveCasinoPage(){
         lobbyPage
@@ -63,30 +84,7 @@ public class LobbyTests extends TestBase{
         lobbyPage
                 .openLiveCasinoPage();
     }
-    @Test(description = "Open the game from the Search modal")
-    public void openGameFromSearchModal(){
-        lobbyPage
-                .clickOnSearch()
-                .getSearchModalTitle().verify();
-        lobbyPage
-                .enterSearchText("40 Super Hot");
-        lobbyPage
-                .playSearchedGame()
-                .getGamePageTitle2().verify();
-    }
-    @Test(description = "Close the game from the game page and return to the 'Lobby' page")
-    public void closeGame(){
-        lobbyPage
-                .clickOnSearch()
-                .getSearchModalTitle().verify();
-        lobbyPage
-                .enterSearchText("40 Super Hot");
-        lobbyPage
-                .playSearchedGame()
-                .getGamePageTitle2().verify();
-        lobbyPage
-                .clickOnBackGameBtnAndVerifyLobbyPage();
-    }
+
     @Test(description = "Open the 'Live Chat' modal and minimize it")
     public void openAndMinimizeLiveChatModal(){
         lobbyPage
@@ -94,20 +92,13 @@ public class LobbyTests extends TestBase{
                 .verifyLiveChatIsOpened()
                 .clickOnMinimizeButton()
                 .verifyLiveChatIsMinimized();
-        }
+    }
         @Test(description = "Open the 'Providers' filter and verify the vendors container")
         public void openProvidersFilterAndVerifyVendorsContainer(){
             lobbyPage
                     .clickOnProviderFilter()
                     .getVendorsContainer().verify();
         }
-
-    /**
-     * The categories bar carries thirty six sections and the page object names the first twelve, so
-     * the provider walks those twelve. Only the position is named here: the label of a section and
-     * the address it opens are content of the CMS, they are renamed there without touching the
-     * markup, and each test reads the address it expects off the link of the section itself.
-     */
     @DataProvider(name = "barSections")
     public Object[][] barSections() {
         return new Object[][]{
@@ -174,6 +165,16 @@ public class LobbyTests extends TestBase{
                 "The 'Bar Section 1' did not open '" + firstPath + "' again, the page stayed on '"
                         + lobbyPage.getCurrentUrl() + "'");
         assertUrlOpensSection(firstPath, "Bar Section 1");
+    }
+
+    private GamePage openGame() {
+        lobbyPage
+                .clickOnSearch()
+                .getSearchModalTitle().verify();
+        lobbyPage
+                .enterSearchText(GAME_NAME);
+        return lobbyPage
+                .playSearchedGame(GAME_NAME);
     }
 
     private void assertUrlOpensSection(String path, String name){

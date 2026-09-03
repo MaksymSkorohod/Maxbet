@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{1} - %msg%n"/>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <!-- Project logging -->
+        <Logger name="io.maxbet" level="INFO"/>
+
+        <!-- Third-party chatter now that SLF4J routes into Log4j2 -->
+        <Logger name="io.github.bonigarcia" level="WARN"/>
+        <Logger name="org.apache.hc" level="WARN"/>
+        <Logger name="com.github.dockerjava" level="WARN"/>
+
+        <Root level="INFO">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>

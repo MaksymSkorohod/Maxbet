@@ -174,4 +174,72 @@ public class ResponsibleGamblingTests extends TestBase {
                 .confirmLimitInDialog()
                 .verifySuccessfulLimitsDialog();
     }
+
+    @Test(description = "Check the self-exclusion section of the 'Responsible Gambling' page")
+    public void checkSelfExclusionSection() {
+        responsibleGamblingPage
+                .verifySelfExclusionSection();
+    }
+
+    @Test(description = "Open the 'Self-exclusion' modal")
+    public void openSelfExclusionModal() {
+        responsibleGamblingPage
+                .clickOnSelfExclusionButton()
+                .verifySelfExclusionModal();
+    }
+
+    @Test(description = "Close the 'Self-exclusion' modal by the 'Cancel' button")
+    public void closeSelfExclusionModalByCancel() {
+        responsibleGamblingPage
+                .clickOnSelfExclusionButton()
+                .verifySelfExclusionModal()
+                .clickOnSelfExclusionCancel()
+                .verifySelfExclusionModalClosed()
+                .verifySelfExclusionSection();
+    }
+
+    @Test(description = "Reopen the 'Self-exclusion' modal after it was cancelled")
+    public void reopenSelfExclusionModalAfterCancel() {
+        responsibleGamblingPage
+                .clickOnSelfExclusionButton()
+                .verifySelfExclusionModal()
+                .clickOnSelfExclusionCancel()
+                .verifySelfExclusionModalClosed()
+                .clickOnSelfExclusionButton()
+                .verifySelfExclusionModal();
+    }
+
+    @Test(description = "Check the 'Gamble Responsibly' section of the 'Responsible Gambling' page")
+    public void checkGambleResponsiblySection() {
+        responsibleGamblingPage
+                .verifyGambleResponsiblyTitle();
+    }
+
+    @Test(description = "Open the 'Gamble Responsibly' modal by the 'Details' button")
+    public void openGambleResponsiblyModal() {
+        responsibleGamblingPage
+                .clickOnGambleResponsiblyDetails()
+                .verifyGambleResponsiblyModal();
+    }
+
+    @Test(description = "Close the 'Gamble Responsibly' modal by the 'Close' button")
+    public void closeGambleResponsiblyModal() {
+        responsibleGamblingPage
+                .clickOnGambleResponsiblyDetails()
+                .verifyGambleResponsiblyModal()
+                .clickOnGambleResponsiblyClose()
+                .verifyGambleResponsiblyModalClosed()
+                .verifyGambleResponsiblyTitle();
+    }
+
+    @Test(description = "Reopen the 'Gamble Responsibly' modal after it was closed")
+    public void reopenGambleResponsiblyModalAfterClose() {
+        responsibleGamblingPage
+                .clickOnGambleResponsiblyDetails()
+                .verifyGambleResponsiblyModal()
+                .clickOnGambleResponsiblyClose()
+                .verifyGambleResponsiblyModalClosed()
+                .clickOnGambleResponsiblyDetails()
+                .verifyGambleResponsiblyModal();
+    }
 }

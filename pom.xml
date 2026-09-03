@@ -18,8 +18,9 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
 
-        <selenium.version>4.44.0</selenium.version>
+        <selenium.version>4.48.0</selenium.version>
         <testng.version>7.9.0</testng.version>
+        <log4j.version>2.23.1</log4j.version>
         <httpclient.version>4.5.14</httpclient.version>
         <webdrivermanager.version>5.8.0</webdrivermanager.version>
         <allure-testng.version>2.29.0</allure-testng.version>
@@ -39,7 +40,7 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>4.44.0</version>
+            <version>${selenium.version}</version>
         </dependency>
 
         <!-- TestNG -->
@@ -65,12 +66,19 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>2.23.1</version>
+            <version>${log4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.23.1</version>
+            <version>${log4j.version}</version>
+        </dependency>
+        <!-- SLF4J binding: routes TestNG/WebDriverManager logging into Log4j2 -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>${log4j.version}</version>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -135,7 +143,7 @@
                         <!-- Allure -->
                         <property>
                             <name>listener</name>
-                            <value>io.qameta.allure.testng.AllureTestNg</value>
+                            <value>io.qameta.allure.testng.AllureTestNg,io.maxbet.listeners.RetryTransformer</value>
                         </property>
                     </properties>
 

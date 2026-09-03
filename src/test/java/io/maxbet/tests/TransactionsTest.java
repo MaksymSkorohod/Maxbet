@@ -185,13 +185,6 @@ public class TransactionsTest extends TestBase {
         }
     }
 
-    /**
-     * Checks the field holds today rather than merely holding a date. The page pre-fills the range
-     * it opens with - 'Date From' a month back, 'Date To' today - so a value that only looks like a
-     * date says nothing about whether the click in the calendar landed. A day written with and
-     * without a leading zero both pass, the placeholder alone does not settle which one the site
-     * renders.
-     */
     private void assertFieldHoldsToday(String value, String fieldName) {
         LocalDate today = LocalDate.now();
         String expected = FIELD_FORMAT.format(today);
@@ -201,8 +194,6 @@ public class TransactionsTest extends TestBase {
                 "The '" + fieldName + "' field does not hold today: expected '" + expected
                         + "' but it holds '" + value + "'");
     }
-
-    /** Picks one of the option elements off the page, so a data provider can name the four types. */
     private interface OptionOf {
         Button of(TransactionsPage page);
     }

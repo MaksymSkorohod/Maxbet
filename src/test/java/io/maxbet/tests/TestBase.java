@@ -33,6 +33,6 @@ public class TestBase {
         Assert.assertTrue(new LoginPage().isUserLoggedIn(),
                 "Login with '" + USERNAME + "' did not sign the user in");
     }
-   @AfterMethod(alwaysRun = true)
-   public void close(){killDriver();}
+  @AfterMethod(alwaysRun = true)
+  public void close(){killDriver();}
 }

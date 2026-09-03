@@ -35,6 +35,16 @@ public class ResponsibleGamblingPage extends AbstractPage{
     private final By weeklyLimitEditButton = By.cssSelector("button[data-fs-element='Profile.ResponsibleGambling.BTN_EditWeekly']");
     private final By monthlyLimitEditButton = By.cssSelector("button[data-fs-element='Profile.ResponsibleGambling.BTN_EditMonthly']");
 
+    private final By selfExclusionTitle = By.xpath("//h2[normalize-space()='Self-exclusion']");
+    private final By selfExclusionButton = By.cssSelector("button[data-fs-element='[Input Signal: Profile.ResponsibleGambling.BTN_SelfExclude]']");
+    private final By selfExclusionModal = By.cssSelector("mb-self-exclusion-dialog");
+    private final By selfExclusionCancelBtn = By.xpath("//mb-self-exclusion-dialog//button[normalize-space()='Cancel']");
+
+    private final By gambleResponsiblyTitle = By.xpath("//h2[normalize-space()='Maxbet Gamble Responsibly']");
+    private final By gambleResponsiblyDetailsBtn = By.cssSelector("button[data-fs-element='[Input Signal: undefined]']");
+    private final By gambleResponsiblyModal = By.cssSelector(".responsible-gaming");
+    private final By gambleResponsiblyCloseBtn = By.cssSelector("div[aria-label='responsibility-info-dialog.close']");
+
 
     @Getter
     TextField ResponsibleGamblingPageTitle = new TextField(responsibleGamblingPageTitle, "The 'Responsible Gambling' page title");
@@ -73,6 +83,23 @@ public class ResponsibleGamblingPage extends AbstractPage{
     Button WeeklyLimitEditButton = new Button(weeklyLimitEditButton, "The 'Weekly Limit' edit button");
     @Getter
     Button MonthlyLimitEditButton = new Button(monthlyLimitEditButton, "The 'Monthly Limit' edit button");
+
+    @Getter
+    TextField SelfExclusionTitle = new TextField(selfExclusionTitle, "The 'Self-exclusion' title");
+    @Getter
+    Button SelfExclusionButton = new Button(selfExclusionButton, "The 'Self-exclusion' button");
+    @Getter
+    TextField SelfExclusionModal = new TextField(selfExclusionModal, "The 'Self-exclusion' modal");
+    @Getter
+    Button SelfExclusionCancelBtn = new Button(selfExclusionCancelBtn, "The 'Self-exclusion' cancel button");
+    @Getter
+    TextField GambleResponsiblyTitle = new TextField(gambleResponsiblyTitle, "The 'Gamble Responsibly' title");
+    @Getter
+    Button GambleResponsiblyDetailsBtn = new Button(gambleResponsiblyDetailsBtn, "The 'Gamble Responsibly' details button");
+    @Getter
+    TextField GambleResponsiblyModal = new TextField(gambleResponsiblyModal, "The 'Gamble Responsibly' modal");
+    @Getter
+    Button GambleResponsiblyCloseBtn = new Button(gambleResponsiblyCloseBtn, "The 'Gamble Responsibly' close button");
 
     @Step("Wait until the 'Responsible Gambling' page is opened")
     public ResponsibleGamblingPage waitUntilPageOpened() {
@@ -177,11 +204,6 @@ public class ResponsibleGamblingPage extends AbstractPage{
         getSuccessfulLimitsDialogModal().verify();
         return this;
     }
-    /*
-     * Editing an already set limit. The three buttons below carry the same 'data-fs-element' as the
-     * setup buttons above - the page renders one button per limit whose label reads 'Edit' once an
-     * amount is stored - so these steps drive the same node under the name the UI shows.
-     */
     @Step("Verify the edit buttons of the deposit limits are shown")
     public ResponsibleGamblingPage verifyDepositLimitsEditButtons() {
         getDailyLimitEditButton().verify();
@@ -205,6 +227,65 @@ public class ResponsibleGamblingPage extends AbstractPage{
     public ResponsibleGamblingPage clickOnMonthlyLimitEdit() {
         ResponsibleGamblingPageTitle.waitPageStability();
         getMonthlyLimitEditButton().clickButton();
+        return this;
+    }
+
+    @Step("Verify the self-exclusion section is shown")
+    public ResponsibleGamblingPage verifySelfExclusionSection() {
+        getSelfExclusionTitle().verify();
+        getSelfExclusionButton().verify();
+        return this;
+    }
+    @Step("Click on the 'Self-exclusion' button")
+    public ResponsibleGamblingPage clickOnSelfExclusionButton() {
+        ResponsibleGamblingPageTitle.waitPageStability();
+        getSelfExclusionButton().clickButton();
+        return this;
+    }
+    @Step("Verify the self-exclusion modal is shown")
+    public ResponsibleGamblingPage verifySelfExclusionModal() {
+        getSelfExclusionModal().verify();
+        getSelfExclusionCancelBtn().verify();
+        return this;
+    }
+    @Step("Click on the 'Cancel' button in the self-exclusion modal")
+    public ResponsibleGamblingPage clickOnSelfExclusionCancel() {
+        getSelfExclusionCancelBtn().clickButton();
+        return this;
+    }
+    @Step("Verify the self-exclusion modal is closed")
+    public ResponsibleGamblingPage verifySelfExclusionModalClosed() {
+        Assert.assertTrue(getSelfExclusionModal().invisibilityOfElementLocated(),
+                "The 'Self-exclusion' modal is still shown");
+        return this;
+    }
+    @Step("Verify the 'Gamble Responsibly' title is shown")
+    public ResponsibleGamblingPage verifyGambleResponsiblyTitle() {
+        getGambleResponsiblyTitle().verify();
+        getGambleResponsiblyDetailsBtn().verify();
+        return this;
+    }
+    @Step("Click on the 'Details' button in the 'Gamble Responsibly' section")
+    public ResponsibleGamblingPage clickOnGambleResponsiblyDetails() {
+        ResponsibleGamblingPageTitle.waitPageStability();
+        getGambleResponsiblyDetailsBtn().clickButton();
+        return this;    
+    }
+    @Step("Verify the 'Gamble Responsibly' modal is shown")
+    public ResponsibleGamblingPage verifyGambleResponsiblyModal() {
+        getGambleResponsiblyModal().verify();
+        getGambleResponsiblyCloseBtn().verify();
+        return this;
+    }
+    @Step("Click on the 'Close' button in the 'Gamble Responsibly' modal")
+    public ResponsibleGamblingPage clickOnGambleResponsiblyClose() {
+        getGambleResponsiblyCloseBtn().clickButton();
+        return this;
+    }
+    @Step("Verify the 'Gamble Responsibly' modal is closed")
+    public ResponsibleGamblingPage verifyGambleResponsiblyModalClosed() {
+        Assert.assertTrue(getGambleResponsiblyModal().invisibilityOfElementLocated(),
+                "The 'Gamble Responsibly' modal is still shown");
         return this;
     }
 }

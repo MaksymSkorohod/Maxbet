@@ -20,14 +20,13 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import java.time.Duration;
 import java.util.List;
+import java.util.stream.Collectors;
 import static io.maxbet.DriverManager.getDriver;
 
 public class LobbyPage extends BaseElement {
-    private static final String LOBBY_URL = "/casino-online/populargames_prod";
+    static final String LOBBY_URL = "/casino-online/populargames_prod";
     private final By mask = By.cssSelector(".mask");
-    private final By userInfoLocator = By.cssSelector(
-            "div[class='right-block notific-padding'] mb-header-user-info[class='user-info']"
-    );
+    private final By userInfoLocator = By.cssSelector("div[class='right-block notific-padding'] mb-header-user-info[class='user-info']");
     private final By userNameBlock = By.cssSelector("div[class='user-name-block'] div[class='name']");
     private final By headerCasinoBtn = By.cssSelector("a[data-fs-element='Nav.Global.NAV_Casino']");
     private final By headerLiveCasinoBtn = By.cssSelector("a[data-fs-element='Nav.Global.NAV_LiveCasino']");
@@ -52,9 +51,10 @@ public class LobbyPage extends BaseElement {
     private final By searchedGameCard = By.cssSelector("mb-games-search-dialog mb-game-card");
     private final By gameCardImage = By.cssSelector(":scope > a");
     private final By gameCardPlayBtn = By.cssSelector(":scope > div > div > button");
-    private final By gamePageTitle1 = By.xpath("//h1[normalize-space()='Mad Cars Online']");
-    private final By gamePageTitle2 = By.xpath("//h1[normalize-space()='40 Super Hot Online']");
-    private final By backGameBtn = By.cssSelector("div[aria-label='nav-back.back-btn']");
+    private final By recentlyPlayedSectionTitle = By.cssSelector("mb-section-title[iconname='recently-played-games-widget.title'] h2");
+    private final By recentlyPlayedGameCard = By.cssSelector("mb-recently-played-games-widget mb-game-card:nth-child(3)");
+    private final By recentlyPlayedGameCards = By.cssSelector("mb-recently-played-games-widget mb-game-card");
+    private final By gameCardName = By.cssSelector(":scope .game-name");
     private final By providerFilter = By.cssSelector("mb-providers-filter > div");
     private final By vendorsContainer = By.cssSelector(".vendors-container");
     private final By sectionDragScrollBar = By.cssSelector(" .mb-nav-list__container.hidden-scroll");
@@ -70,7 +70,6 @@ public class LobbyPage extends BaseElement {
     private final By barSection10 = By.cssSelector("section.categories-bar mb-nav-list-item:nth-child(10) a");
     private final By barSection11 = By.cssSelector("section.categories-bar mb-nav-list-item:nth-child(11) a");
     private final By barSection12 = By.cssSelector("section.categories-bar mb-nav-list-item:nth-child(12) a");
-
     private final By lobbyMenu = By.cssSelector(".menu-items-groups");
     private final By popularGamesBtn = By.cssSelector(".mb-menu-item.variant--compact[link='/casino/populargames']");
     private final By allGamesBtn = By.cssSelector(".mb-menu-item.variant--compact[link='/casino/allgames']");
@@ -117,11 +116,7 @@ public class LobbyPage extends BaseElement {
     @Getter
     Button SearchedGame = new Button(searchedGame, "The searched game in the Search modal");
     @Getter
-    TextField GamePageTitle1 = new TextField(gamePageTitle1, "The game page title");
-    @Getter
-    TextField GamePageTitle2 = new TextField(gamePageTitle2, "The game page title");
-    @Getter
-    Button BackGameBtn = new Button(backGameBtn, "The 'Back' button on the game page");
+    TextField RecentlyPlayedSectionTitle = new TextField(recentlyPlayedSectionTitle, "The 'Recently played' section title");
     @Getter
     Button ProviderFilter = new Button(providerFilter, "The 'Provider' filter");
     @Getter
@@ -232,13 +227,17 @@ public class LobbyPage extends BaseElement {
     public void clickOnSearchedGame() {
         getDriver().findElements(searchedGame).get(0).click();
     }
+    /**
+     * The game the name of which is expected on the title of the page that is opened is taken as an
+     * argument, because the search modal is left behind by the click and the page that follows it is
+     * a page of a game rather than a page of the lobby.
+     */
     @Step("Hover over the searched game and click the 'Play' button")
-    public LobbyPage playSearchedGame() {
-        playSearchedGame(0);
-        return this;
+    public GamePage playSearchedGame(String gameName) {
+        return playSearchedGame(0, gameName);
     }
     @Step("Hover over the searched game #{index} and click the 'Play' button")
-    public LobbyPage playSearchedGame(int index) {
+    public GamePage playSearchedGame(int index, String gameName) {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
         WebElement card = wait.until(driver -> {
@@ -258,15 +257,90 @@ public class LobbyPage extends BaseElement {
                     return button.isDisplayed() && button.isEnabled() ? button : null;
                 });
         playBtn.click();
-        return this;
+        return new GamePage(gameName, getGameCardPath(card));
     }
-    @Step("Click on the 'Back' button on the game page")
-    public void clickOnBackGameBtnAndVerifyLobbyPage() {
-        wait.until(ExpectedConditions.elementToBeClickable(backGameBtn)).click();
-    wait.until(ExpectedConditions.urlContains(LOBBY_URL));
-    Assert.assertTrue(
-            getDriver().getCurrentUrl().contains(LOBBY_URL),
-            "Lobby Page URL is incorrect. Actual URL: " + getDriver().getCurrentUrl());
+    /**
+     * Opens a game from the 'Recently played' section of the lobby. The card holds its thumbnail and
+     * the overlay it lays over the thumbnail on hover as two siblings, and the 'Play' button sits in
+     * that overlay, so the card is scrolled into view and hovered before the button is awaited and
+     * clicked - the same shape a card of the search modal has, which is why the locators of that
+     * card are reused here.
+     * <p>
+     * The name the card carries is read off the card before the click, so the page of the game that
+     * follows can be verified by the title of the game the section offered rather than by the
+     * wrapper alone - the section holds whatever the account has played and no name can be hard
+     * coded into the test.
+     */
+    @Step("Hover over the recently played game and click the 'Play' button")
+    public GamePage playRecentlyPlayedGame() {
+        waitUntilMaskDisappears();
+        WebElement card = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(recentlyPlayedGameCard));
+        return openGameCard(card);
+    }
+    /**
+     * Opens the game of the given name out of the 'Recently played' section. The section is ordered by
+     * the last time a game was played, so the game a position holds changes from run to run, while a
+     * round is played on the controls of the provider of the game - a test that plays a round has to
+     * name the game it opens rather than take the one a position happens to hold.
+     */
+    @Step("Hover over the recently played '{gameName}' game and click the 'Play' button")
+    public GamePage playRecentlyPlayedGame(String gameName) {
+        waitUntilMaskDisappears();
+        new WebDriverWait(getDriver(), Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(recentlyPlayedGameCards));
+
+        WebElement card = getDriver().findElements(recentlyPlayedGameCards).stream()
+                .filter(gameCard -> gameName.equals(
+                        gameCard.findElement(gameCardName).getText().trim()))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError(
+                        "The 'Recently played' section holds no '" + gameName + "' game, it holds "
+                                + getRecentlyPlayedGameNames()));
+        return openGameCard(card);
+    }
+    @Step("Read the names of the games the 'Recently played' section holds")
+    public List<String> getRecentlyPlayedGameNames() {
+        return getDriver().findElements(recentlyPlayedGameCards).stream()
+                .map(card -> card.findElement(gameCardName).getText().trim())
+                .collect(Collectors.toList());
+    }
+    /**
+     * The card lays the overlay that holds the 'Play' button over its thumbnail only while the
+     * pointer rests on it, so the card is scrolled into view and hovered before the button is awaited
+     * and clicked. The name and the address the card carries are read off it before the click, so the
+     * page of the game that follows can be verified against the game the card offered - a card of the
+     * 'Recently played' section holds whatever the account has played and carries no name a test could
+     * have hard coded.
+     */
+    private GamePage openGameCard(WebElement card) {
+        String gameName = card.findElement(gameCardName).getText().trim();
+        String gamePath = getGameCardPath(card);
+
+        new Actions(getDriver())
+                .scrollToElement(card)
+                .moveToElement(card.findElement(gameCardImage))
+                .pause(Duration.ofMillis(300))
+                .perform();
+
+        WebElement playBtn = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
+                .ignoring(NoSuchElementException.class, StaleElementReferenceException.class)
+                .until(driver -> {
+                    WebElement button = card.findElement(gameCardPlayBtn);
+                    return button.isDisplayed() && button.isEnabled() ? button : null;
+                });
+        playBtn.click();
+        return new GamePage(gameName, gamePath);
+    }
+    /**
+     * Reads the address of the game off its card. The thumbnail of a card is the link to the game, so
+     * the address a click opens is known before the click and does not have to be guessed from the
+     * name of the game.
+     */
+    private String getGameCardPath(WebElement card) {
+        String path = card.findElement(gameCardImage).getDomAttribute("href");
+        Assert.assertNotNull(path, "The card of the game carries no address to open");
+        return path;
     }
     @Step("Click on the 'Providers' filter")
     public LobbyPage clickOnProviderFilter() {
@@ -333,11 +407,6 @@ public class LobbyPage extends BaseElement {
         getBarSection12().clickButton();
         return this;
     }
-    /**
-     * The address a section of the categories bar opens, '/en/casino-online/velitech' and the like,
-     * read off the link itself. The sections are categories of the CMS, they are renamed and
-     * reordered there, so the expected URL belongs on the page rather than in a test.
-     */
     @Step("Read the address the section of the categories bar links to")
     public String getBarSectionPath(Button barSection) {
         return barSection.getAttributeValue("href");

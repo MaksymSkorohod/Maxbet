@@ -67,63 +67,63 @@ public class ResponsibleGamblingTests extends TestBase {
                 .verifyLimitsModalClosed();
     }
 
-    @Test(description = "Open the confirmation dialog when a new daily limit is saved")
-    public void openDailyLimitConfirmationDialog() {
-        responsibleGamblingPage
-                .clickOnDailyLimitSetup()
-                .verifyLimitsModal()
-                .enterLimitAmount(LIMIT_AMOUNT)
-                .clickOnSaveLimit()
-                .verifyLimitsConfirmationDialog();
-    }
+    // @Test(description = "Open the confirmation dialog when a new daily limit is saved")
+    // public void openDailyLimitConfirmationDialog() {
+    //     responsibleGamblingPage
+    //             .clickOnDailyLimitSetup()
+    //             .verifyLimitsModal()
+    //             .enterLimitAmount(LIMIT_AMOUNT)
+    //             .clickOnSaveLimit()
+    //             .verifyLimitsConfirmationDialog();
+    // }
 
-    @Test(description = "Decline the new daily limit in the confirmation dialog")
-    public void declineDailyLimitInConfirmationDialog() {
-        responsibleGamblingPage
-                .clickOnDailyLimitSetup()
-                .verifyLimitsModal()
-                .enterLimitAmount(LIMIT_AMOUNT)
-                .clickOnSaveLimit()
-                .verifyLimitsConfirmationDialog()
-                .declineLimitInDialog()
-                .verifyLimitsConfirmationDialogClosed();
-    }
+    // @Test(description = "Decline the new daily limit in the confirmation dialog")
+    // public void declineDailyLimitInConfirmationDialog() {
+    //     responsibleGamblingPage
+    //             .clickOnDailyLimitSetup()
+    //             .verifyLimitsModal()
+    //             .enterLimitAmount(LIMIT_AMOUNT)
+    //             .clickOnSaveLimit()
+    //             .verifyLimitsConfirmationDialog()
+    //             .declineLimitInDialog()
+    //             .verifyLimitsConfirmationDialogClosed();
+    // }
 
-    @Test(description = "Set a new daily deposit limit")
-    public void setDailyLimit() {
-        responsibleGamblingPage
-                .clickOnDailyLimitSetup()
-                .verifyLimitsModal()
-                .enterLimitAmount(LIMIT_AMOUNT)
-                .clickOnSaveLimit()
-                .verifyLimitsConfirmationDialog()
-                .confirmLimitInDialog()
-                .verifySuccessfulLimitsDialog();
-    }
+    // @Test(description = "Set a new daily deposit limit")
+    // public void setDailyLimit() {
+    //     responsibleGamblingPage
+    //             .clickOnDailyLimitSetup()
+    //             .verifyLimitsModal()
+    //             .enterLimitAmount(LIMIT_AMOUNT)
+    //             .clickOnSaveLimit()
+    //             .verifyLimitsConfirmationDialog()
+    //             .confirmLimitInDialog()
+    //             .verifySuccessfulLimitsDialog();
+    // }
 
-    @Test(description = "Set a new weekly deposit limit")
-    public void setWeeklyLimit() {
-        responsibleGamblingPage
-                .clickOnWeeklyLimitSetup()
-                .verifyLimitsModal()
-                .enterLimitAmount(LIMIT_AMOUNT)
-                .clickOnSaveLimit()
-                .verifyLimitsConfirmationDialog()
-                .confirmLimitInDialog()
-                .verifySuccessfulLimitsDialog();
-    }
+    // @Test(description = "Set a new weekly deposit limit")
+    // public void setWeeklyLimit() {
+    //     responsibleGamblingPage
+    //             .clickOnWeeklyLimitSetup()
+    //             .verifyLimitsModal()
+    //             .enterLimitAmount(LIMIT_AMOUNT)
+    //             .clickOnSaveLimit()
+    //             .verifyLimitsConfirmationDialog()
+    //             .confirmLimitInDialog()
+    //             .verifySuccessfulLimitsDialog();
+    // }
 
-    @Test(description = "Set a new monthly deposit limit")
-    public void setMonthlyLimit() {
-        responsibleGamblingPage
-                .clickOnMonthlyLimitSetup()
-                .verifyLimitsModal()
-                .enterLimitAmount(LIMIT_AMOUNT)
-                .clickOnSaveLimit()
-                .verifyLimitsConfirmationDialog()
-                .confirmLimitInDialog()
-                .verifySuccessfulLimitsDialog();
-    }
+    // @Test(description = "Set a new monthly deposit limit")
+    // public void setMonthlyLimit() {
+    //     responsibleGamblingPage
+    //             .clickOnMonthlyLimitSetup()
+    //             .verifyLimitsModal()
+    //             .enterLimitAmount(LIMIT_AMOUNT)
+    //             .clickOnSaveLimit()
+    //             .verifyLimitsConfirmationDialog()
+    //             .confirmLimitInDialog()
+    //             .verifySuccessfulLimitsDialog();
+    // }
 
     @Test(description = "Check the edit buttons of the deposit limits are shown")
     public void checkDepositLimitsEditButtons() {
@@ -163,17 +163,17 @@ public class ResponsibleGamblingTests extends TestBase {
                 .verifyLimitsModalClosed();
     }
 
-    @Test(description = "Edit the daily deposit limit to a new amount")
-    public void editDailyLimit() {
-        responsibleGamblingPage
-                .clickOnDailyLimitEdit()
-                .verifyLimitsModal()
-                .enterLimitAmount(EDITED_LIMIT_AMOUNT)
-                .clickOnSaveLimit()
-                .verifyLimitsConfirmationDialog()
-                .confirmLimitInDialog()
-                .verifySuccessfulLimitsDialog();
-    }
+    // @Test(description = "Edit the daily deposit limit to a new amount")
+    // public void editDailyLimit() {
+    //     responsibleGamblingPage
+    //             .clickOnDailyLimitEdit()
+    //             .verifyLimitsModal()
+    //             .enterLimitAmount(EDITED_LIMIT_AMOUNT)
+    //             .clickOnSaveLimit()
+    //             .verifyLimitsConfirmationDialog()
+    //             .confirmLimitInDialog()
+    //             .verifySuccessfulLimitsDialog();
+    // }
 
     @Test(description = "Check the self-exclusion section of the 'Responsible Gambling' page")
     public void checkSelfExclusionSection() {

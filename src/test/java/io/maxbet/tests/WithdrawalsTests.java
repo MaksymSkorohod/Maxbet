@@ -1,4 +1,5 @@
 package io.maxbet.tests;
+import io.maxbet.listeners.TestGroups;
 
 import io.maxbet.pageObjects.*;
 import org.testng.annotations.BeforeMethod;
@@ -13,7 +14,7 @@ public class WithdrawalsTests extends TestBase {
         ProfilePage profilePage = new LobbyPage().clickOnUserInfo();
         profilePage.getProfileMenu().verify();
     }
-    @Test(description = "Open first payment method the 'Withdraw' page")
+    @Test(groups = {TestGroups.SMOKE}, description = "Open first payment method the 'Withdraw' page")
     public void openFirstWithdrawMethod(){
         profilePage
                 .clickOnWithdrawalBtnOnProfilePage();

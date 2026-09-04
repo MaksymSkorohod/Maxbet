@@ -1,4 +1,5 @@
 package io.maxbet.tests;
+import io.maxbet.listeners.TestGroups;
 
 import io.maxbet.Units.CnpGenerator;
 import io.maxbet.Units.EmailGenerator;
@@ -31,7 +32,7 @@ public class LogInTests extends TestBase {
                 "The Login modal is not displayed"
         );
     }
-    @Test(description = "Successful Login")
+    @Test(groups = {TestGroups.SMOKE}, description = "Successful Login")
     public void loginSuccess() {
         getDriver().get("https://dev.maxbet.ro/en");
       loginPage

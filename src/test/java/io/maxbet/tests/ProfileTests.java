@@ -1,4 +1,5 @@
 package io.maxbet.tests;
+import io.maxbet.listeners.TestGroups;
 
 import io.maxbet.pageObjects.*;
 import org.testng.annotations.BeforeMethod;
@@ -12,7 +13,7 @@ public class ProfileTests extends TestBase{
         profilePage = new LobbyPage().clickOnUserInfo();
         profilePage.getProfileMenu().verify();
     }
-    @Test(description = "Open the 'Bonuses' page from the 'Profile' page")
+    @Test(groups = {TestGroups.SMOKE}, description = "Open the 'Bonuses' page from the 'Profile' page")
     public void openBonusesPageFromProfile(){
         profilePage
                 .getProfileMenu().verify();

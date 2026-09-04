@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!-- The smoke run: the critical happy paths only, one per area, gated on a commit. The group is set
+     on the tests themselves, so the suite takes every test class of the package and lets the group
+     include pick the smoke ones out. -->
+<suite name="Smoke">
+    <test name="Smoke">
+        <groups>
+            <run>
+                <include name="smoke"/>
+            </run>
+        </groups>
+        <packages>
+            <package name="io.maxbet.tests"/>
+        </packages>
+    </test>
+</suite>

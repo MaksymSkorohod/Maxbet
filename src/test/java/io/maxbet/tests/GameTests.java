@@ -1,4 +1,5 @@
 package io.maxbet.tests;
+import io.maxbet.listeners.TestGroups;
 
 import io.maxbet.pageObjects.GamePage;
 import io.maxbet.pageObjects.LobbyPage;
@@ -21,7 +22,7 @@ public class GameTests extends TestBase {
         lobbyPage = new LobbyPage();
     }
 
-    @Test(description = "Open a game from the 'Recently played' section of the 'Lobby' page")
+    @Test(groups = {TestGroups.SMOKE}, description = "Open a game from the 'Recently played' section of the 'Lobby' page")
     public void openGameFromRecentlyPlayed() {
         openRecentlyPlayedGame()
                 .verifyGameOpened();

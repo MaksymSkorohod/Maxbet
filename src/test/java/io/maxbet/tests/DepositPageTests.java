@@ -1,4 +1,5 @@
 package io.maxbet.tests;
+import io.maxbet.listeners.TestGroups;
 
 import io.maxbet.Elements.Button;
 import io.maxbet.pageObjects.DepositPage;
@@ -75,7 +76,7 @@ public class DepositPageTests extends TestBase {
                         + depositPage.getCurrentUrl());
     }
 
-    @Test(description = "Every payment method is listed on the 'Deposit' page")
+    @Test(groups = {TestGroups.SMOKE}, description = "Every payment method is listed on the 'Deposit' page")
     public void allPaymentMethodsAreListed() {
         SoftAssert softly = new SoftAssert();
         for (PaymentMethod paymentMethod : PAYMENT_METHODS) {

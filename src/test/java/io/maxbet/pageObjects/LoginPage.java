@@ -264,6 +264,31 @@ public class LoginPage extends BaseElement {
         // settled, and the answer is "no" on every fresh browser.
         return getUserInfo().isExists(3);
     }
+    /**
+     * The whole sign-in flow behind one call: the cookie banner and the notification dialog, both of
+     * which appear only some of the time, are handled if present and skipped otherwise, and a session
+     * that is already signed in - the browser is fresh per test, so this only holds when a step logs
+     * in and hands the page on - returns without touching the login modal. Every test starts from this
+     * one method, so the flow and its verification live in a single place rather than being spelled
+     * out in each setup.
+     */
+    @Step("Log in as '{username}'")
+    public LoginPage login(String username, String password) {
+        acceptCookiesIfPresent();
+        waitUntilMaskDisappears();
+        if (isUserLoggedIn()) {
+            return this;
+        }
+        clickOnLoginButton()
+                .enterUsername(username)
+                .enterPassword(password)
+                .clickOnLogin()
+                .clickOnPage()
+                .clickOnAcceptNotification();
+        Assert.assertTrue(isUserLoggedIn(),
+                "Login with '" + username + "' did not sign the user in");
+        return this;
+    }
     @Step("Click on the 'Login' button from the Lobby page")
     public LoginPage clickOnLoginButton() {
         getLoginButton().clickButton();
@@ -322,14 +347,19 @@ public class LoginPage extends BaseElement {
         getNotificationDialog().clickAnywhereOnPage();
         return this;
     }
-    @Step("Click on the 'Accept' button in the Notification Dialog")
-    public void clickOnAcceptNotification() {
+    @Step("Accept the notification dialog if present")
+    public LoginPage clickOnAcceptNotification() {
         waitUntilMaskDisappears();
+        if (!getNotificationAccept().isExists(10)) {
+            log.info("Notification dialog was not shown, nothing to accept");
+            return this;
+        }
         getNotificationAccept().clickButton();
         Assert.assertTrue(
                 getNotificationAccept().invisibilityOfElementLocated(10),
                 "Notification dialog is still visible after clicking Accept"
         );
+        return this;
     }
     @Step("Click on the 'Decline' button in the Notification Dialog")
     public LoginPage clickOnDeclineNotification() {

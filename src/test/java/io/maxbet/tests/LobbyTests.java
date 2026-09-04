@@ -1,4 +1,5 @@
 package io.maxbet.tests;
+import io.maxbet.listeners.TestGroups;
 
 import io.maxbet.Elements.Button;
 import io.maxbet.pageObjects.GamePage;
@@ -67,7 +68,7 @@ public class LobbyTests extends TestBase{
                 vipPage.getVipPageTitle().verify();
     }
 
-    @Test(description = "Open the 'Deposit' modal from the 'Lobby' page")
+    @Test(groups = {TestGroups.SMOKE}, description = "Open the 'Deposit' modal from the 'Lobby' page")
     public void openDepositModal(){
         lobbyPage
                 .clickOnDeposit();

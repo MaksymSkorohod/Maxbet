@@ -1,6 +1,5 @@
 package io.maxbet.tests;
 import io.maxbet.listeners.TestGroups;
-
 import io.maxbet.pageObjects.*;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -14,6 +13,7 @@ public class WithdrawalsTests extends TestBase {
         ProfilePage profilePage = new LobbyPage().clickOnUserInfo();
         profilePage.getProfileMenu().verify();
     }
+
     @Test(groups = {TestGroups.SMOKE}, description = "Open first payment method the 'Withdraw' page")
     public void openFirstWithdrawMethod(){
         profilePage
@@ -23,6 +23,7 @@ public class WithdrawalsTests extends TestBase {
         withdrawalsPage
                 .openFirstWithdrawalMethod();
     }
+
     @Test(description = "Check warning message for minimum amount of WD")
     public void checkMinimumWdAmountMessage(){
         profilePage
@@ -35,6 +36,7 @@ public class WithdrawalsTests extends TestBase {
                 .clickCardSwitch()
                 .verifyWithdrawErrorMessage("Number should be 5 minimum");
     }
+
     @Test(description = "Check warning message for maximum amount of WD")
     public void checkMaximumWdAmountMessage(){
         profilePage
@@ -48,6 +50,7 @@ public class WithdrawalsTests extends TestBase {
                 .clickContinueBtnWd()
                 .verifyWithdrawErrorMessage("Number should be 10500 maximum");
     }
+
     @Test(description = "Make successful WD")
     public void makeSuccessfulWd(){
         profilePage
@@ -61,6 +64,7 @@ public class WithdrawalsTests extends TestBase {
                 .clickContinueBtnWd()
                 .verifySuccessWdModal();
     }
+
     @Test(description = "Open the 'Pending withdrawals' page")
     public void openPendingWd(){
         profilePage
@@ -68,6 +72,7 @@ public class WithdrawalsTests extends TestBase {
         new PendingWdPage()
                 .waitUntilPendingWdPageOpened();
     }
+
     @Test(description = "Open the 'Pending withdrawals' page")
     public void removePendingWd(){
         profilePage

@@ -23,10 +23,6 @@ public class DepositPageTests extends TestBase {
     private static final String VALID_DEPOSIT = "50";
     private static final String VALID_CVV = "111";
     private static final long BALANCE_SETTLE_TIMEOUT = 30;
-    /**
-     * Romania taxes player deposits at 2%, so a deposit of 50 credits 49. Kept as the worst case
-     * the test tolerates rather than an exact rate: a smaller cut - or none - is not a defect.
-     */
     private static final BigDecimal MAX_DEPOSIT_TAX_RATE = new BigDecimal("0.02");
 
     private static final List<PaymentMethod> PAYMENT_METHODS = Arrays.asList(
@@ -40,6 +36,7 @@ public class DepositPageTests extends TestBase {
             new PaymentMethod("Skrill", DepositPage::clickOnSkrillPM, DepositPage::getSkrillPM, "/skrill"),
             new PaymentMethod("Neteller", DepositPage::clickOnNetellerPM, DepositPage::getNetellerPM, "/neteller")
     );
+
     private static final class PaymentMethod {
         private final String name;
         private final Function<DepositPage, DepositPage> open;
@@ -58,7 +55,6 @@ public class DepositPageTests extends TestBase {
     }
 
     private DepositPage depositPage;
-
     @BeforeMethod(alwaysRun = true)
     public void openDepositPage() {
         ProfilePage profilePage = new LobbyPage().clickOnUserInfo();
@@ -109,7 +105,6 @@ public class DepositPageTests extends TestBase {
                                 + paymentMethod.name + "'");
                 return returned;
             });
-        
             if (!backOnTheList) {
                 break;
             }
@@ -133,7 +128,6 @@ public class DepositPageTests extends TestBase {
         depositPage
                 .clickOnBankCardPM()
                 .verifyPmPageOpened("/bank-card");
-
         SoftAssert softly = new SoftAssert();
         for (int index = 1; index <= DepositPage.AMOUNT_SELECTOR_COUNT; index++) {
             int selectorIndex = index;
@@ -263,13 +257,7 @@ public class DepositPageTests extends TestBase {
                 .clickOnMakeDepositBtn()
                 .verifySuccessDepositPopUp();
     }
-    /**
-     * The balance does not grow by the full deposit: a deposit of 50 was observed to credit 49,
-     * which matches the 2% tax Romania levies on player deposits. Asserting the credited band
-     * rather than an exact figure is what keeps this stable - it still catches a deposit that
-     * credits nothing, credits more than was paid in, or is cut by more than the expected tax,
-     * without pinning the test to a rate that is the product's to decide.
-     */
+
     @Test(description = "The balance grows by the credited part of the deposit")
     public void balanceGrowsByTheDepositedAmount() {
         depositPage

@@ -21,6 +21,7 @@ public class TestBase {
         getDriver().get(BASE_URL);
         new LoginPage().login(USERNAME, PASSWORD);
     }
-  // @AfterMethod(alwaysRun = true)
-  // public void close(){killDriver();}
+    
+  @AfterMethod(alwaysRun = true)
+  public void close(){killDriver();}
 }

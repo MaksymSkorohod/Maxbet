@@ -14,6 +14,7 @@ public class PromoTest extends TestBase{
     public void tournamentsPageIsOpen(){
         promoPage = new LobbyPage().clickOnPromotions();
     }
+    
     @Test(description = "Open the 'Promotions' page")
     public void openPromoPage(){
         System.out.println("Navigate to: " + DriverManager.getDriver().getCurrentUrl());
@@ -21,6 +22,7 @@ public class PromoTest extends TestBase{
                 .verifyCurrentUrl("https://dev.maxbet.ro/en/promotions/like-prod");
         Assert.assertTrue(promoPage.isUrlContains("/like-prod"));
     }
+
     @Test(description = "Open the 'Promotions' page")
     public void openSectionPromoPage(){
         promoPage

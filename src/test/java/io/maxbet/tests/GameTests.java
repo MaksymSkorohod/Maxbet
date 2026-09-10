@@ -1,18 +1,10 @@
 package io.maxbet.tests;
 import io.maxbet.listeners.TestGroups;
-
 import io.maxbet.pageObjects.GamePage;
 import io.maxbet.pageObjects.LobbyPage;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-/**
- * The games opened from the 'Recently played' section of the lobby. The section is ordered by the last
- * time a game was played, so the game a position of it holds changes from run to run: a test that only
- * opens a game takes the game the section offers and verifies the page against the card it clicked,
- * while the test that plays a round names the game it opens, because a round is played on the controls
- * of the provider of the game.
- */
 public class GameTests extends TestBase {
     /** The game the controls of which {@link GamePage#playRound()} drives. */
     private static final String PLAYABLE_GAME = "40 Super Hot";

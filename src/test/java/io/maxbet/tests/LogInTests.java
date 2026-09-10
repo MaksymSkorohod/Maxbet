@@ -1,6 +1,5 @@
 package io.maxbet.tests;
 import io.maxbet.listeners.TestGroups;
-
 import io.maxbet.Units.CnpGenerator;
 import io.maxbet.Units.EmailGenerator;
 import io.maxbet.Units.PhoneNumberGenerator;
@@ -19,6 +18,7 @@ public class LogInTests extends TestBase {
         lobbyPage = new LobbyPage();
 
     }
+    
     @Test(description = "Open the Login modal")
     public void openLoginModal() {
         getDriver().get("https://dev.maxbet.ro/en");
@@ -32,6 +32,7 @@ public class LogInTests extends TestBase {
                 "The Login modal is not displayed"
         );
     }
+
     @Test(groups = {TestGroups.SMOKE}, description = "Successful Login")
     public void loginSuccess() {
         getDriver().get("https://dev.maxbet.ro/en");
@@ -50,6 +51,7 @@ public class LogInTests extends TestBase {
                 "User info is not visible after successful login"
         );
     }
+
     @Test(description = "Login with a non-existing username")
     public void loginWithIncorrectUsername() {
         getDriver().get("https://dev.maxbet.ro/en");
@@ -70,6 +72,7 @@ public class LogInTests extends TestBase {
                 "The user was signed in with a non-existing username"
         );
     }
+
     @Test(description = "Login with an incorrect password")
     public void loginWithIncorrectPassword() {
         getDriver().get("https://dev.maxbet.ro/en");
@@ -90,6 +93,7 @@ public class LogInTests extends TestBase {
                 "The user was signed in with an incorrect password"
         );
     }
+
     @Test(description = "Open the Forgot password")
     public void openForgotPassword() {
         getDriver().get("https://dev.maxbet.ro/en");
@@ -106,6 +110,7 @@ public class LogInTests extends TestBase {
                 "The Forgot password modal is not visible"
         );
     }
+
     @Test(description = "Enter an email address on the Forgot password")
     public void enterEmailOnForgotPasswordModal() {
         getDriver().get("https://dev.maxbet.ro/en");
@@ -124,6 +129,7 @@ public class LogInTests extends TestBase {
         new LoginPage()
                 .enterEmailIntoEmailInput("sometest1233@mail.com");
     }
+
     @Test(description = "Open register modal")
     public void openRegisterModal(){
         getDriver().get("https://dev.maxbet.ro/en");
@@ -136,6 +142,7 @@ public class LogInTests extends TestBase {
                 new LoginPage().getRegisterTabLocator().isExists(15), "Register modal is not displayed"
         );
     }
+
     @Test(description = "Complete Step 1 for Registration")
     public void completeStep1(){
         getDriver().get("https://dev.maxbet.ro/en");
@@ -156,6 +163,7 @@ public class LogInTests extends TestBase {
                 .clickOnContinueButton()
                 .getRegisterTabLocator().verify();
     }
+
     @Test(description = "Complete Registration")
     public void completeRegistration() throws InterruptedException {
         getDriver().get("https://dev.maxbet.ro/en");
@@ -191,6 +199,7 @@ public class LogInTests extends TestBase {
                 .clickOnPage()
                 .clickCloseBtnSuccessfulRegistrationModal();
     }
+
     @Test(description = "Verify Required Field Validation Message On Registration Step 1")
     public void verifyRequiredFieldValidationMessagesOnRegistrationStep1(){
         getDriver().get("https://dev.maxbet.ro/en");
@@ -215,6 +224,7 @@ public class LogInTests extends TestBase {
         Assert.assertTrue( new LoginPage().getTermsAndConditionRequired().isExists(5),
                 "Terms & Conditions validation message is not displayed" );
     }
+
     @Test(description = "Verify Required Field Validation Message On Registration Step 2")
     public void verifyRequiredFieldValidationMessagesOnRegistrationStep2() {
         getDriver().get("https://dev.maxbet.ro/en");

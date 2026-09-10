@@ -84,11 +84,7 @@ public class PendingWithdrawalsTests extends TestBase {
                 "The confirmed withdrawal is still in the pending list: expected " + (pendingBefore - 1)
                         + " withdrawal(s) but found " + pendingWdPage.getPendingWithdrawalsCount());
     }
-    /**
-     * The remove-flow tests only make sense when the shared account actually has a withdrawal waiting.
-     * An empty pending list is a valid state of the account, not a defect, so the test is skipped
-     * rather than failed.
-     */
+ 
     private void skipIfNoPendingWithdrawal() {
         if (!pendingWdPage.hasPendingWithdrawal()) {
             throw new SkipException(

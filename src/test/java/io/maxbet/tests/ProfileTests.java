@@ -13,14 +13,16 @@ public class ProfileTests extends TestBase{
         profilePage = new LobbyPage().clickOnUserInfo();
         profilePage.getProfileMenu().verify();
     }
+
     @Test(groups = {TestGroups.SMOKE}, description = "Open the 'Bonuses' page from the 'Profile' page")
     public void openBonusesPageFromProfile(){
         profilePage
                 .getProfileMenu().verify();
         profilePage
                 .clickOnBonuses()
-                .getBonusesPageTitle().verify();
+                .getActiveBonusesTitle().verify();
     }
+
     @Test(description = "Open the 'Pending Withdrawals' page from the 'Profile' page")
     public void openPendingWdPageFromProfile(){
         profilePage
@@ -30,6 +32,7 @@ public class ProfileTests extends TestBase{
         new PendingWdPage()
                 .getRequestWdBtn().verify();
     }
+
     @Test(description = "Open the 'Transactions' page from the 'Profile' page")
     public void openTransactionsPageFromProfile(){
         profilePage
@@ -39,6 +42,7 @@ public class ProfileTests extends TestBase{
         new TransactionsPage()
                 .getTransactionsPageTitle().verify();
     }
+
     @Test(description = "Open the 'Account Security' page from the 'Profile' page")
     public void openAccountSecurityPageFromProfile(){
         profilePage
@@ -48,6 +52,7 @@ public class ProfileTests extends TestBase{
         new AccountSecurityPage()
                 .getAccountSecurityPageTitle().verify();
     }
+
     @Test(description = "Open the 'Authentication' page from the 'Profile' page")
     public void openAuthenticationPageFromProfile(){
         profilePage
@@ -57,6 +62,7 @@ public class ProfileTests extends TestBase{
         new AuthenticationPage()
                 .getAuthenticationPageTitle().verify();
     }
+
     @Test(description = "Open the 'My Details' page from the 'Profile' page")
     public void openMyDetailsPageFromProfile(){
         profilePage
@@ -66,6 +72,7 @@ public class ProfileTests extends TestBase{
         new MyDetailsPage()
                 .getMyDetailsSection().verify();
     }
+
     @Test(description = "Open the 'Responsible Gambling' page from the 'Profile' page")
     public void openResponsibleGamblingPageFromProfile(){
         profilePage
@@ -75,6 +82,7 @@ public class ProfileTests extends TestBase{
         new ResponsibleGamblingPage()
                 .getResponsibleGamblingPageTitle().verify();
     }
+
     @Test(description = "Open the 'Legal' page from the 'Profile' page")
     public void openLegalPageFromProfile(){
         profilePage
@@ -84,6 +92,7 @@ public class ProfileTests extends TestBase{
         new LegalPage()
                 .getLegalPage().verify();
     }
+
     @Test(description = "Logout from the portal")
     public void logout(){
         profilePage
@@ -91,6 +100,7 @@ public class ProfileTests extends TestBase{
         profilePage
                 .clickOnLogout();
     }
+    
     @Test(description = "Open the 'Deposit' page from the 'Profile' page")
     public void openDepositPageFromProfile(){
         profilePage

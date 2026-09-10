@@ -14,7 +14,7 @@ public class ProfilePage extends BaseElement {
     private final By depositBtnOnProfPage = By.cssSelector(".user-balance-container > div:nth-child(2) > a:first-child");
     private final By withdrawBtnOnProfPage = By.cssSelector(".btn-secondary.link-item.withdrawals");
     private final By myAccountBtn = By.cssSelector(".mb-menu-item.variant--compact[link='/profile']");
-    private final By bonusesBtn = By.cssSelector("div[class='menu'] mb-menu-item:nth-child(2) a:nth-child(1)");
+    private final By bonusesBtn = By.cssSelector("mb-profile-menu mb-menu-item:nth-child(2) a");
     private final By pendingWdBtn = By.cssSelector(".mb-menu-item.variant--compact[link='/profile/pending-withdrawals']");
     private final By transactionsBtn = By.cssSelector(".mb-menu-item.variant--compact[link='/profile/transactions']");
     private final By accountSecurityBtn = By.cssSelector(".mb-menu-item.variant--compact[link='/profile/account-security']");

@@ -1,6 +1,5 @@
 package io.maxbet.tests;
 import io.maxbet.listeners.TestGroups;
-
 import io.maxbet.Elements.Button;
 import io.maxbet.pageObjects.GamePage;
 import io.maxbet.pageObjects.LobbyPage;
